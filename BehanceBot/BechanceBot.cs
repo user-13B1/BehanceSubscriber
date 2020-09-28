@@ -21,7 +21,7 @@ namespace BehanceBot
 
     public partial class BehBotForm : Form
     {
-        private readonly Writer Cons;
+        private readonly Writer console;
         private readonly FileReader fileReader;
         private readonly List<Bot> bots;
 
@@ -37,16 +37,15 @@ namespace BehanceBot
             this.Location = new Point(1600, 100);
 
             fileReader = new FileReader();
-            Cons = new Writer(this, fileReader);    //Активируем консоль
+            console = new Writer(this, fileReader);    // Активируем лог консоль
             bots = new List<Bot>(3);
-
         }
 
         private void BehBotForm_Load(object sender, EventArgs e)
         {
-            Task.Run(() => Launch(new FollowingBot(Cons, fileReader), 2));
-            Task.Run(() => Launch(new LikeBot(Cons, fileReader), 2));
-            Task.Run(() => Launch(new UnFollowingBot(Cons, fileReader), 2));
+            Task.Run(() => Launch(new FollowingBot(console, fileReader), 200));
+            Task.Run(() => Launch(new LikeBot(console, fileReader), 200));
+            Task.Run(() => Launch(new UnFollowingBot(console, fileReader), 220));
             Task.Run(() => TimerEnd(TimeSpan.FromHours(3)));
         }
 
@@ -66,7 +65,7 @@ namespace BehanceBot
             bots.Remove(bot);
             if(bots.Count==0)
             {
-                Cons.WriteLine("All bot stoped.Application closed.");
+                console.WriteLine("All bot stoped. Application closed.");
                 Thread.Sleep(TimeSpan.FromSeconds(5));
                 Application.Exit();
             }
@@ -81,7 +80,7 @@ namespace BehanceBot
             }
 
             Thread.Sleep(TimeSpan.FromSeconds(5));
-            Cons.WriteLine("Timer went off. Application closed.");
+            console.WriteLine("Timer went off. Application closed.");
             Application.Exit();
         }
 

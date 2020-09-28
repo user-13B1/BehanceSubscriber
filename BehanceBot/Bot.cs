@@ -199,7 +199,7 @@ namespace BehanceBot
 
         public UnFollowingBot(Writer Cons, FileReader fileReader) : base(Cons, fileReader)
         {
-            Name = " UnFollowingBot";
+            Name = "UnFollowingBot";
         }
 
         internal override void Start(int limit)

@@ -44,19 +44,19 @@
             // 
             // textBoxLogin
             // 
-            this.textBoxLogin.Location = new System.Drawing.Point(184, 148);
+            this.textBoxLogin.Location = new System.Drawing.Point(154, 148);
             this.textBoxLogin.Name = "textBoxLogin";
-            this.textBoxLogin.Size = new System.Drawing.Size(100, 20);
+            this.textBoxLogin.Size = new System.Drawing.Size(130, 20);
             this.textBoxLogin.TabIndex = 3;
             this.textBoxLogin.Text = "Login";
             this.textBoxLogin.TextChanged += new System.EventHandler(this.TextBoxLogin_TextChanged);
             // 
             // textBoxPassword
             // 
-            this.textBoxPassword.Location = new System.Drawing.Point(184, 174);
+            this.textBoxPassword.Location = new System.Drawing.Point(154, 174);
             this.textBoxPassword.MaxLength = 100;
             this.textBoxPassword.Name = "textBoxPassword";
-            this.textBoxPassword.Size = new System.Drawing.Size(100, 20);
+            this.textBoxPassword.Size = new System.Drawing.Size(130, 20);
             this.textBoxPassword.TabIndex = 4;
             this.textBoxPassword.Text = "Password";
             this.textBoxPassword.UseSystemPasswordChar = true;
