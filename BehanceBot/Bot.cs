@@ -110,10 +110,7 @@ namespace BehanceBot
             return num;
         }
 
-        internal virtual void Start(int limit)
-        {
-
-        }
+        internal virtual void Start(int limit) { }
 
         internal void Close()
         {
@@ -336,6 +333,4 @@ namespace BehanceBot
 
         }
     }
-
-
 }
