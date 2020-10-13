@@ -21,34 +21,27 @@ namespace BehanceBot
     internal abstract class Bot
     {
         internal readonly Chrome chrome;
-        internal readonly Writer Cons;
+        internal readonly Writer console;
         internal readonly FileReader fileReader;
         internal string Name { get; set; }
+        internal string user_xpath;
 
         public Bot(Writer Cons, FileReader fileReader)
         {
-            this.Cons = Cons;
+            this.console = Cons;
             this.fileReader = fileReader;
             chrome = new Chrome();
             chrome.SetWindowSize(1280, 1000);
+            user_xpath = "//*[@id='app']/div/div/div[18]/div/div[1]/div/div[2]/div/div[1]/ul/li[";
         }
 
-        internal int OpenMySubs()
-        {
-            Cons.WriteLine("Open my portfolio page");
-            chrome.OpenUrl(@"https://www.behance.net/balakir/projects");
-            int subs_count = ParsToInt(chrome.FindWebElement(By.XPath(@"//*[@id='app']/div/div/div[1]/main/div[2]/div[1]/div[2]/div[1]/div[2]/table/tbody/tr[4]/td[2]/a")).Text);
-            Cons.WriteLine($"Number of our subscriptions {subs_count}");
-            chrome.ClickButtonXPath(@"//*[@id='app']/div/div/div[1]/main/div[2]/div[1]/div[2]/div[1]/div[2]/table/tbody/tr[4]/td[2]/a");
-            return subs_count;
-        }
 
         internal bool IsBlock()
         {
             string xpath = $@"/html/body/div[26]/div/div[2]/a";
             if (chrome.IsElementPage(By.XPath(xpath)))
             {
-                Cons.WriteLine($"Limit error.");
+                console.WriteLine($"Limit error.");
                 return true;
             }
 
@@ -57,37 +50,42 @@ namespace BehanceBot
 
         internal bool Autorize(string v1, string v2)
         {
-            Cons.WriteLine($"{ Name}: authorization is in progress.");                                 //Ввод логина и пароля. 
+            int timeSleep = 2000;
+#if DEBUG
+            timeSleep = timeSleep / 10;
+#endif
+
+            console.WriteLine($"{Name}: authorization is in progress.");                                 //Ввод логина и пароля. 
             chrome.OpenUrl(@"https://www.behance.net/search");
 
             chrome.ClickButtonXPath(@".//*[@id='_evidon-accept-button']");         //Принимаем соглашение о куки
 
             chrome.ClickButtonXPath(@"./html/body/nav/ul[2]/li[2]/a");             //Войти
-            Thread.Sleep(2000);
+            Thread.Sleep(timeSleep);
             chrome.SendKeysXPath(@".//input[@id='EmailPage-EmailField']", v1);
-            Thread.Sleep(2000);
+            Thread.Sleep(timeSleep);
             chrome.ClickButtonXPath(@".//*[@id='EmailForm']/section[2]/div[2]/button");
-            Thread.Sleep(1000);
+            Thread.Sleep(timeSleep);
             chrome.SendKeysXPath(@".//input[@id='PasswordPage-PasswordField']", v2);
-            Thread.Sleep(1000);
+            Thread.Sleep(timeSleep);
             chrome.ClickButtonXPath(@".//*[@id='PasswordForm']/section[2]/div[2]/button");
-            Thread.Sleep(1000);
+            Thread.Sleep(timeSleep);
             //открываем подписки
             if (!chrome.ClickButtonXPath(@"./html/body/nav/ul[2]/li[4]/a"))
             {
-                Cons.WriteLine($"{Name}: Error аutorized.");
+                console.WriteLine($"{Name}: Error аutorized.");
                 return false;
             }
 
             chrome.ClickButtonXPath(@".//*[@id='app']/div/div/div[1]/main/div[2]/div[1]/div[2]/div[1]/div[2]/table/tbody/tr[3]/td[2]/a");
-            Cons.WriteLine($"{Name}: аutorized.");
+            console.WriteLine($"{Name}: аutorized.");
             return true;
         }
 
         internal void OpenRandomPage()
         {
             string s_rand_page = fileReader.GetRandomUrl();
-            Cons.WriteLine($"Open random page {s_rand_page}");
+            console.WriteLine($"Open random page {s_rand_page}");
             chrome.OpenUrl(s_rand_page);
         }
 
@@ -105,7 +103,7 @@ namespace BehanceBot
             }
 
             if (!Int32.TryParse(text, out int num))
-                Cons.WriteLine($"Ошибка парсинга строки в число - {text}");
+                console.WriteLine($"Ошибка парсинга строки в число - {text}");
 
             return num;
         }
@@ -114,7 +112,7 @@ namespace BehanceBot
 
         internal void Close()
         {
-            Cons.WriteLine($"{Name}: end work.");
+            console.WriteLine($"{Name}: Close.");
             chrome.Quit();
         }
     }
@@ -130,6 +128,7 @@ namespace BehanceBot
 
         internal override void Start(int limit)
         {
+            
             folow_counter = 0;
             OpenRandomPage();
 
@@ -137,11 +136,13 @@ namespace BehanceBot
             {
                 if (IsBlock())
                     return;
-                string xpath = @"./html/body/div[17]/div/div[1]/div/div[2]/div/div[1]/ul/li[" + i + @"]";
+                string xpath = user_xpath + i + @"]";
+                console.WriteLine($"{Name}: Scroll.");
                 chrome.Scroll(xpath);
                 if (!ParseAndFollowing(xpath, i, limit)) return;
                 Thread.Sleep(300);
             }
+            console.WriteLine($"{Name}: Stop.");
         }
 
         internal bool ParseAndFollowing(string xpath, int i, int follow_max_count)
@@ -162,7 +163,7 @@ namespace BehanceBot
 
                 if (like_persona < 100 && like_persona > 5 && num_views < 999 && num_views > 20 && button_text == "Подписаться")
                 {
-                    Cons.WriteLine($"{i}) {like_persona} {num_views} {name_persona} Подписка № {folow_counter}");
+                    console.WriteLine($"{i}) {like_persona} {num_views} {name_persona} Подписка № {folow_counter}");
 
                     chrome.ClickButtonXPath(xpath + @"/div/div/div/div[2]/div[1]/div/a[1]");
                     folow_counter++;
@@ -170,13 +171,13 @@ namespace BehanceBot
 
                 if (num_views > 20000)
                 {
-                    Cons.WriteLine($"{i}) {name_persona} Добавлен для подписок.");
+                    console.WriteLine($"{i}) {name_persona} Добавлен для подписок.");
                     fileReader.WriteUrltoFile(url_persona + @"/followers");
                 }
 
                 if (folow_counter >= follow_max_count)
                 {
-                    Cons.WriteLine($"Выполнено.Завершение работы.");
+                    console.WriteLine($"Выполнено.Завершение работы.");
                     return false;
                 }
 
@@ -184,7 +185,7 @@ namespace BehanceBot
             }
             catch
             {
-                Cons.WriteLine($"Ошибка парсинга аккаунтов для подписки.");
+                console.WriteLine($"Ошибка парсинга аккаунтов для подписки.");
                 return false;
             }
 
@@ -207,13 +208,14 @@ namespace BehanceBot
             int subs_count = OpenMySubs();
             if (subs_count <= 500)
             {
-                Cons.WriteLine("Количество подписок не достаточно для начала отписки.");
+                console.WriteLine("Количество подписок не достаточно для начала отписки.");
                 return;
             }
 
             for (int i = 2; i < subs_count; i++) //Скролим вниз
             {
-                string xpath = @"./html/body/div[17]/div/div/div/div[2]/div/div[1]/ul/li[" + i + @"]";
+                
+                string xpath = user_xpath + i + "]";
                 chrome.Scroll(xpath);
                 // Cons.WriteLine(i, false);
             }
@@ -223,7 +225,7 @@ namespace BehanceBot
                 if (IsBlock())
                     return;
 
-                string xpath = @"./html/body/div[17]/div/div/div/div[2]/div/div[1]/ul/li[" + i + @"]";
+                string xpath = user_xpath + i + "]";
                 chrome.Scroll(xpath);
                 Thread.Sleep(3000);
                 Unsubscribe(i);
@@ -234,12 +236,25 @@ namespace BehanceBot
 
         }
 
+
+        internal int OpenMySubs()
+        {
+            console.WriteLine("Open my portfolio page");
+            chrome.OpenUrl(@"https://www.behance.net/balakir/projects");
+            string mySubs_xPath = @"//*[@id='site-content']/div/main/div[2]/div[1]/div[2]/div[1]/div[2]/table/tbody/tr[4]/td[2]/a";
+
+            int subs_count = ParsToInt(chrome.FindWebElement(By.XPath(mySubs_xPath)).Text);
+            console.WriteLine($"Number of our subscriptions {subs_count}");
+            chrome.ClickButtonXPath(mySubs_xPath);
+            return subs_count;
+        }
+
         internal void Unsubscribe(int j)
         {
             j += 2;
-            Cons.WriteLine($"Unsubscribe: {j}", false);
-            string btn_1 = $@"./html/body/div[17]/div/div/div/div[2]/div/div[1]/ul/li[{j}]/div/div/div/div[2]/div[1]/div/a[2]";
-            string btn_2 = $@"./html/body/div[17]/div/div/div/div[2]/div/div[1]/ul/li[{j}]/div/div/div/div[2]/div[1]/div/a[3]";
+            console.WriteLine($"Unsubscribe: {j}", false);
+            string btn_1 = user_xpath + $@"{j}]/div/div/div/div[2]/div[1]/div/a[2]";
+            string btn_2 = user_xpath + $@"{j}]/div/div/div/div[2]/div[1]/div/a[3]";
             IWebElement elem_button_1 = chrome.FindWebElement(By.XPath(btn_1));
             IWebElement elem_button_2 = chrome.FindWebElement(By.XPath(btn_2));
 
@@ -253,7 +268,7 @@ namespace BehanceBot
                 chrome.ClickButtonXPath(btn_2);
                 return;
             }
-            Cons.WriteLine($"Account: {j}, error unsubscribe");
+            console.WriteLine($"Account: {j}, error unsubscribe");
         }
     }
 
@@ -273,7 +288,7 @@ namespace BehanceBot
                 OpenRandomPage();
                 for (int i = 3; i < 3000; i++)
                 {
-                    string xpathUser = @"./html/body/div[17]/div/div[1]/div/div[2]/div/div[1]/ul/li[" + i + @"]";
+                    string xpathUser = user_xpath + i + "]";
 
                     if (like_counter >= limit)
                         return;
@@ -283,7 +298,7 @@ namespace BehanceBot
 
                     if (!chrome.Scroll(xpathUser))
                     {
-                        Cons.WriteLine("End following list");
+                        console.WriteLine("End following list");
                         break;
                     }
 
@@ -291,7 +306,7 @@ namespace BehanceBot
                     {
                         LikePhoto(userUrl);
                         like_counter++;
-                        Cons.WriteLine($"Like! Number of likes = {like_counter}");
+                        console.WriteLine($"Like! Number of likes = {like_counter}");
                     }
 
                     Thread.Sleep(200);
@@ -313,10 +328,11 @@ namespace BehanceBot
                 return false;
             }
 
-            void LikePhoto(string url)
+            void LikePhoto(string userUrl)
             {
-                chrome.OpenUrlNewTab(url);
-                IWebElement Element_photo = chrome.FindWebElement(By.XPath(@"//*[@id='app']/div/div/div[1]/main/div[2]/div[2]/div/div/div/div/div[1]/div[1]/div/div/div[2]/a"));
+                chrome.OpenUrlNewTab(userUrl);
+                                                                                                                              
+                IWebElement Element_photo = chrome.FindWebElement(By.XPath(@"//*[@id='site-content']/div/main/div[2]/div[2]/div/div/div/div/div[1]/div[1]/div/div/div[2]/a"));
                 string url_photo = Element_photo.GetAttribute("href");
                 chrome.OpenUrl(url_photo);
 
@@ -324,7 +340,7 @@ namespace BehanceBot
 
                 if (!chrome.ClickButtonXPath(@"//div[.='Оценить']"))
                 {
-                    Cons.WriteLine($"Error like");
+                    console.WriteLine($"Error like");
                 }
 
                 Thread.Sleep(500);

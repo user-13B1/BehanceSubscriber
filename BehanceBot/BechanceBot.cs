@@ -53,7 +53,9 @@ namespace BehanceBot
         private void Launch(Bot bot,int limit)
         {
             bots.Add(bot);
+
             bot.Autorize(textBoxLogin.Text, textBoxPassword.Text);
+            
             bot.Start(limit);
             
             Close(bot);

@@ -71,6 +71,7 @@
             this.Controls.Add(this.textBoxLogin);
             this.Controls.Add(this.txtConsole1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.MaximizeBox = false;
             this.Name = "BehBotForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "BehanceBot";
