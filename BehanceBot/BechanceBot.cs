@@ -25,7 +25,6 @@ namespace BehanceBot
         private readonly FileReader fileReader;
         private readonly List<Bot> bots;
 
-
         public BehBotForm()
         {
             InitializeComponent();
@@ -44,8 +43,8 @@ namespace BehanceBot
         private void BehBotForm_Load(object sender, EventArgs e)
         {
             Task.Run(() => Launch(new FollowingBot(console, fileReader), 200));
-            Task.Run(() => Launch(new LikeBot(console, fileReader), 200));
-            Task.Run(() => Launch(new UnFollowingBot(console, fileReader), 220));
+            //Task.Run(() => Launch(new LikeBot(console, fileReader), 200));
+            //Task.Run(() => Launch(new UnFollowingBot(console, fileReader), 220));
             Task.Run(() => TimerEnd(TimeSpan.FromHours(3)));
         }
 

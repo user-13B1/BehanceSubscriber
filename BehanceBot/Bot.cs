@@ -55,13 +55,15 @@ namespace BehanceBot
             timeSleep = timeSleep / 10;
 #endif
 
-            console.WriteLine($"{Name}: authorization is in progress.");                                 //Ввод логина и пароля. 
+            console.WriteLine($"{Name}: authorization.");                                 //Ввод логина и пароля. 
             chrome.OpenUrl(@"https://www.behance.net/search");
-
-            chrome.ClickButtonXPath(@".//*[@id='_evidon-accept-button']");         //Принимаем соглашение о куки
-
-            chrome.ClickButtonXPath(@"./html/body/nav/ul[2]/li[2]/a");             //Войти
+            
+            //---Вход---
+            string xpath = "//button[@class='Btn-button-BGn Btn-base-M-O Btn-normal-hI4 js-adobeid-signin PrimaryNav-a11yButton-2Cl']";
+            IWebElement Element = chrome.FindWebElement(By.XPath(xpath));
+            Element.Click();
             Thread.Sleep(timeSleep);
+           
             chrome.SendKeysXPath(@".//input[@id='EmailPage-EmailField']", v1);
             Thread.Sleep(timeSleep);
             chrome.ClickButtonXPath(@".//*[@id='EmailForm']/section[2]/div[2]/button");
