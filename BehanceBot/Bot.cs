@@ -1,20 +1,20 @@
-﻿using System;
-using System.Diagnostics;
+﻿using OpenQA.Selenium;
+using SeleniumLib;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.WindowsRuntime;
+using System.Security.Policy;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using OpenQA.Selenium;
-using System.Threading;
-using System.IO;
-using System.Runtime.InteropServices;
-using System.Security.Policy;
-using System.Runtime.InteropServices.WindowsRuntime;
-using SeleniumLib;
 
 namespace BehanceBot
 {
@@ -52,18 +52,16 @@ namespace BehanceBot
         {
             int timeSleep = 2000;
 #if DEBUG
-            timeSleep = timeSleep / 10;
+            timeSleep /= 10;
 #endif
-
             console.WriteLine($"{Name}: authorization.");                                 //Ввод логина и пароля. 
             chrome.OpenUrl(@"https://www.behance.net/search");
-            
+
             //---Вход---
             string xpath = "//button[@class='Btn-button-BGn Btn-base-M-O Btn-normal-hI4 js-adobeid-signin PrimaryNav-a11yButton-2Cl']";
             IWebElement Element = chrome.FindWebElement(By.XPath(xpath));
             Element.Click();
             Thread.Sleep(timeSleep);
-           
             chrome.SendKeysXPath(@".//input[@id='EmailPage-EmailField']", v1);
             Thread.Sleep(timeSleep);
             chrome.ClickButtonXPath(@".//*[@id='EmailForm']/section[2]/div[2]/button");
@@ -112,13 +110,27 @@ namespace BehanceBot
 
         internal virtual void Start(int limit) { }
 
+        internal bool CheckUser(string xpath, out string userUrl)
+        {
+            int like_persona = ParsToInt(chrome.FindWebElement(By.XPath(xpath + @"/div/div/div/div[2]/div[3]/span")).Text);
+            int num_views = ParsToInt(chrome.FindWebElement(By.XPath(xpath + @"/div/div/div/div[2]/div[4]/span")).Text);
+            string button_text = chrome.FindWebElement(By.XPath(xpath + @"/div/div/div/div[2]/div[1]/div/a[1]/span")).Text;
+
+            IWebElement Element = chrome.FindWebElement(By.XPath(xpath + @"/div/div/div/div[1]/h3/a"));
+            userUrl = Element.GetAttribute("href");
+
+            if (like_persona < 100 && like_persona > 10 && num_views < 999 && num_views > 30 && button_text == "Подписаться")
+                return true;
+
+            return false;
+        }
+
         internal void Close()
         {
             console.WriteLine($"{Name}: Close.");
             chrome.Quit();
         }
     }
-
 
     internal class FollowingBot : Bot
     {
@@ -315,20 +327,6 @@ namespace BehanceBot
                 }
             }
 
-            bool CheckUser(string xpath, out string userUrl)
-            {
-                int like_persona = ParsToInt(chrome.FindWebElement(By.XPath(xpath + @"/div/div/div/div[2]/div[3]/span")).Text);
-                int num_views = ParsToInt(chrome.FindWebElement(By.XPath(xpath + @"/div/div/div/div[2]/div[4]/span")).Text);
-                string button_text = chrome.FindWebElement(By.XPath(xpath + @"/div/div/div/div[2]/div[1]/div/a[1]/span")).Text;
-
-                IWebElement Element = chrome.FindWebElement(By.XPath(xpath + @"/div/div/div/div[1]/h3/a"));
-                userUrl = Element.GetAttribute("href");
-
-                if (like_persona < 100 && like_persona > 10 && num_views < 999 && num_views > 20 && button_text == "Подписаться")
-                    return true;
-
-                return false;
-            }
 
             void LikePhoto(string userUrl)
             {
@@ -351,4 +349,88 @@ namespace BehanceBot
 
         }
     }
+   
+    internal class AddBordWorks : Bot
+    {
+
+        public AddBordWorks(Writer Cons, FileReader fileReader) : base(Cons, fileReader)
+        {
+            Name = "AddBordWorks";
+        }
+
+        internal override void Start(int limit)
+        {
+            int imageAddBoard_counter = 0;
+            for (int j = 0; j < 30; j++)
+            {
+                OpenRandomPage();
+                for (int i = 3; i < 3000; i++)
+                {
+                    string xpathUser = user_xpath + i + "]";
+
+                    if (imageAddBoard_counter >= limit)
+                        return;
+
+                    if (IsBlock())
+                        return;
+
+                    if (!chrome.Scroll(xpathUser))
+                    {
+                        console.WriteLine("End following list");
+                        break;
+                    }
+
+                    if (CheckUser(xpathUser, out string userUrl))
+                    {
+                        AddImageToBoard(userUrl);
+                        imageAddBoard_counter++;
+                        console.WriteLine($"Save image to board. Count = {imageAddBoard_counter}");
+                    }
+
+                    Thread.Sleep(100);
+                }
+            }
+
+           
+
+            void AddImageToBoard(string userUrl)
+            {
+                chrome.OpenUrlNewTab(userUrl);
+
+                IWebElement Element_photo = chrome.FindWebElement(By.XPath(@"//*[@id='site-content']/div/main/div[2]/div[2]/div/div/div/div/div[1]/div[1]/div/div/div[2]/a"));
+                string url_photo = Element_photo.GetAttribute("href");
+                chrome.OpenUrl(url_photo);
+
+                Thread.Sleep(600);
+               // console.WriteLine("Open board page.");
+                if (!chrome.ClickButtonXPath(@"//div[.='Сохранить']"))
+                {
+                    console.WriteLine($"Error open board.");
+                }
+                Thread.Sleep(500);
+
+
+               // console.WriteLine("Select board.");
+                if (!chrome.ClickButtonXPath(@" //*[@id='app']/div/div/div[15]/div/div/ul/li"))
+                {
+                    console.WriteLine($"Error select board.");
+                }
+                Thread.Sleep(600);
+
+               // console.WriteLine("Save image.");
+                if (!chrome.ClickButtonXPath(@"  //*[@id='app']/div/div/div[15]/div/div/div[4]/div[2]/button/div/div"))
+                {
+                    console.WriteLine($"Error save image to board.");
+                }
+                Thread.Sleep(3000);
+
+
+                chrome.CloseAndReturnTab();
+            }
+
+        }
+    }
+
+
+
 }

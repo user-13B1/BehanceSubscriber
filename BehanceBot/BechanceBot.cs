@@ -1,17 +1,17 @@
-﻿using System;
+﻿using OpenQA.Selenium;
+using OpenQA.Selenium.Chrome;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
-using System.Windows.Forms;
-using OpenQA.Selenium;
-using OpenQA.Selenium.Chrome;
 using System.Threading;
 using System.Threading.Tasks;
-using System.IO;
-using System.Runtime.InteropServices;
+using System.Windows.Forms;
 
 
 
@@ -43,8 +43,9 @@ namespace BehanceBot
         private void BehBotForm_Load(object sender, EventArgs e)
         {
             Task.Run(() => Launch(new FollowingBot(console, fileReader), 200));
-            //Task.Run(() => Launch(new LikeBot(console, fileReader), 200));
-            //Task.Run(() => Launch(new UnFollowingBot(console, fileReader), 220));
+            Task.Run(() => Launch(new LikeBot(console, fileReader), 200));
+            Task.Run(() => Launch(new UnFollowingBot(console, fileReader), 220));
+            Task.Run(() => Launch(new AddBordWorks(console, fileReader), 200));
             Task.Run(() => TimerEnd(TimeSpan.FromHours(3)));
         }
 
