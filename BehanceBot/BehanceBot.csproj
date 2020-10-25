@@ -61,10 +61,14 @@
     <Compile Include="BechanceBot.Designer.cs">
       <DependentUpon>BechanceBot.cs</DependentUpon>
     </Compile>
+    <Compile Include="LikeBot.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Class\TextBoxStreamWriter.cs" />
     <Compile Include="Class\Writer.cs" />
+    <Compile Include="SubscriberBot.cs" />
+    <Compile Include="UnsubscribeBot.cs" />
+    <Compile Include="WorkAddBoardBot.cs" />
     <EmbeddedResource Include="BechanceBot.resx">
       <DependentUpon>BechanceBot.cs</DependentUpon>
     </EmbeddedResource>
