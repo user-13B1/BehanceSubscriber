@@ -9,10 +9,10 @@ namespace BehanceBot
     {
         private readonly BehBotForm Form;
         private readonly TextWriter _writer;
-        private readonly FileReader file_reader;
+        private readonly FileReaderWriter file_reader;
 
 
-        public Writer(BehBotForm Form, FileReader file_reader)
+        public Writer(BehBotForm Form, FileReaderWriter file_reader)
         {
             this.Form = Form;
             

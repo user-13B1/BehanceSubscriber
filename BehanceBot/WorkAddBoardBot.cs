@@ -8,7 +8,7 @@ namespace BehanceBot
 {
     internal class WorkAddBoardBot : Bot
     {
-        public WorkAddBoardBot(Writer Cons, FileReader fileReader) : base(Cons, fileReader)
+        public WorkAddBoardBot(Writer Cons, FileReaderWriter fileReader) : base(Cons, fileReader)
         {
             Name = "WorkAddBoardBot";
         }
@@ -21,7 +21,7 @@ namespace BehanceBot
                 OpenRandomPage();
                 for (int i = 3; i < 3000; i++)
                 {
-                    string xpathUser = user_xpath + i + "]";
+                    string xpathUser = UserXpath + i + "]";
 
                     if (imageAddBoard_counter >= limit)
                         return;
@@ -29,9 +29,9 @@ namespace BehanceBot
                     if (IsBlock())
                         return;
 
-                    if (!chrome.Scroll(xpathUser))
+                    if (!Сhrome.Scroll(xpathUser))
                     {
-                        console.WriteLine("End following list");
+                        Cons.WriteLine("End following list");
                         break;
                     }
 
@@ -39,7 +39,7 @@ namespace BehanceBot
                     {
                         AddImageToBoard(userUrl);
                         imageAddBoard_counter++;
-                        console.WriteLine($"Save image to board. Count = {imageAddBoard_counter}");
+                        Cons.WriteLine($"Save image to board. Count = {imageAddBoard_counter}");
                     }
 
                     Thread.Sleep(100);
@@ -50,35 +50,35 @@ namespace BehanceBot
 
             void AddImageToBoard(string userUrl)
             {
-                chrome.OpenUrlNewTab(userUrl);
+                Сhrome.OpenUrlNewTab(userUrl);
 
-                IWebElement Element_photo = chrome.FindWebElement(By.XPath(@"//*[@id='site-content']/div/main/div[2]/div[2]/div/div/div/div/div[1]/div[1]/div/div/div[2]/a"));
+                IWebElement Element_photo = Сhrome.FindWebElement(By.XPath(@"//*[@id='site-content']/div/main/div[2]/div[2]/div/div/div/div/div[1]/div[1]/div/div/div[2]/a"));
                 string url_photo = Element_photo.GetAttribute("href");
-                chrome.OpenUrl(url_photo);
+                Сhrome.OpenUrl(url_photo);
 
                 Thread.Sleep(600);
                 // console.WriteLine("Open board page.");
-                if (!chrome.ClickButtonXPath(@"//div[.='Сохранить']"))
+                if (!Сhrome.ClickButtonXPath(@"//div[.='Сохранить']"))
                 {
-                    console.WriteLine($"Error open board.");
+                    Cons.WriteLine($"Error open board.");
                 }
                 Thread.Sleep(500);
 
                 // console.WriteLine("Select board.");
-                if (!chrome.ClickButtonXPath(@"//*[@id='app']/div/div/div[15]/div/div/ul/li"))
+                if (!Сhrome.ClickButtonXPath(@"//*[@id='app']/div/div/div[15]/div/div/ul/li"))
                 {
-                    console.WriteLine($"Error select board.");
+                    Cons.WriteLine($"Error select board.");
                 }
                 Thread.Sleep(600);
 
                 // console.WriteLine("Save image.");
-                if (!chrome.ClickButtonXPath(@"//*[@id='app']/div/div/div[15]/div/div/div[4]/div[2]/button/div/div"))
+                if (!Сhrome.ClickButtonXPath(@"//*[@id='app']/div/div/div[15]/div/div/div[4]/div[2]/button/div/div"))
                 {
-                    console.WriteLine($"Error save image to board.");
+                    Cons.WriteLine($"Error save image to board.");
                 }
                 Thread.Sleep(3000);
 
-                chrome.CloseAndReturnTab();
+                Сhrome.CloseAndReturnTab();
             }
 
         }

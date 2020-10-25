@@ -11,7 +11,7 @@ namespace BehanceBot
     public partial class BehBotForm : Form
     {
         private readonly Writer console;
-        private readonly FileReader fileReader;
+        private readonly FileReaderWriter fileReader;
         private readonly List<Bot> bots;
 
         public BehBotForm()
@@ -24,7 +24,7 @@ namespace BehanceBot
             StartPosition = FormStartPosition.Manual;
             Location = new Point(1600, 100);
 
-            fileReader = new FileReader();
+            fileReader = new FileReaderWriter();
             console = new Writer(this, fileReader);    
             bots = new List<Bot>(4);
         }

@@ -7,7 +7,7 @@ namespace BehanceBot
 {
     internal class LikeBot : Bot
     {
-        public LikeBot(Writer Cons, FileReader fileReader) : base(Cons, fileReader)
+        public LikeBot(Writer Cons, FileReaderWriter fileReader) : base(Cons, fileReader)
         {
             Name = "LikeBot";
         }
@@ -20,7 +20,7 @@ namespace BehanceBot
                 OpenRandomPage();
                 for (int i = 3; i < 3000; i++)
                 {
-                    string xpathUser = user_xpath + i + "]";
+                    string xpathUser = UserXpath + i + "]";
 
                     if (like_counter >= limit)
                         return;
@@ -28,9 +28,9 @@ namespace BehanceBot
                     if (IsBlock())
                         return;
 
-                    if (!chrome.Scroll(xpathUser))
+                    if (!Сhrome.Scroll(xpathUser))
                     {
-                        console.WriteLine("End following list");
+                        Cons.WriteLine("End following list");
                         break;
                     }
 
@@ -38,7 +38,7 @@ namespace BehanceBot
                     {
                         LikePhoto(userUrl);
                         like_counter++;
-                        console.WriteLine($"Like! Number of likes = {like_counter}");
+                        Cons.WriteLine($"Like! Number of likes = {like_counter}");
                     }
 
                     Thread.Sleep(200);
@@ -48,21 +48,21 @@ namespace BehanceBot
 
             void LikePhoto(string userUrl)
             {
-                chrome.OpenUrlNewTab(userUrl);
+                Сhrome.OpenUrlNewTab(userUrl);
 
-                IWebElement Element_photo = chrome.FindWebElement(By.XPath(@"//*[@id='site-content']/div/main/div[2]/div[2]/div/div/div/div/div[1]/div[1]/div/div/div[2]/a"));
+                IWebElement Element_photo = Сhrome.FindWebElement(By.XPath(@"//*[@id='site-content']/div/main/div[2]/div[2]/div/div/div/div/div[1]/div[1]/div/div/div[2]/a"));
                 string url_photo = Element_photo.GetAttribute("href");
-                chrome.OpenUrl(url_photo);
+                Сhrome.OpenUrl(url_photo);
 
                 Thread.Sleep(300);
 
-                if (!chrome.ClickButtonXPath(@"//div[.='Оценить']"))
+                if (!Сhrome.ClickButtonXPath(@"//div[.='Оценить']"))
                 {
-                    console.WriteLine($"Error like");
+                    Cons.WriteLine($"Error like");
                 }
 
                 Thread.Sleep(500);
-                chrome.CloseAndReturnTab();
+                Сhrome.CloseAndReturnTab();
             }
 
         }

@@ -11,14 +11,14 @@ using System.Threading;
 namespace BehanceBot
 {
 
-    internal class FileReader
+    internal class FileReaderWriter
     {
         private readonly string data_path_dir;
         private readonly string message_log_txt_path;
         readonly string urls_path = @"\Urls.txt";
         readonly List<string> buffer_mes_list;
 
-        public FileReader()
+        public FileReaderWriter()
         {
             data_path_dir = Directory.GetCurrentDirectory();
             buffer_mes_list = new List<string>();

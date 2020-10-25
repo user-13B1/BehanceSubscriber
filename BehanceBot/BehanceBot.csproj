@@ -54,7 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bot.cs" />
-    <Compile Include="Class\FileReader.cs" />
+    <Compile Include="Class\FileReaderWriter.cs" />
     <Compile Include="BechanceBot.cs">
       <SubType>Form</SubType>
     </Compile>
