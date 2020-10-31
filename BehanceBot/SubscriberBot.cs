@@ -24,7 +24,6 @@ namespace BehanceBot
                 if (IsBlock())
                     return;
                 string xpath = UserXpath + i + @"]";
-
                 Сhrome.Scroll(xpath);
                 if (!ParseAndFollowing(xpath, i, limit)) return;
                 Thread.Sleep(300);
@@ -55,7 +54,7 @@ namespace BehanceBot
                     folow_counter++;
                 }
 
-                if (num_views > 20000)
+                if (num_views > 10000)
                 {
                     Cons.WriteLine($"{i}) {name_persona} Add for subscribe.");
                     FileReader.WriteUrltoFile(url_persona + @"/followers");

@@ -12,14 +12,19 @@ namespace BehanceBot
         private protected FileReaderWriter FileReader { get; set; }
         internal string Name { get; set; }
         internal string UserXpath { get; set; }
+        static int profileCounter = 0;
+        internal int botNum;
 
         public Bot(Writer console, FileReaderWriter fileReader)
         {
+        
+            UserXpath = "//*[@id='app']/div/div/div[19]/div/div[1]/div/div[2]/div/div[2]/div/div[1]/ul/li[";
             Cons = console;
             FileReader = fileReader;
-            Сhrome = new ChromeBrowser();
+            Сhrome = new ChromeBrowser((++profileCounter).ToString());
+            botNum = profileCounter;
             Сhrome.SetWindowSize(1280, 1000);
-            UserXpath = "//*[@id='app']/div/div/div[18]/div/div[1]/div/div[2]/div/div[1]/ul/li[";
+
         }
 
         internal bool IsBlock()
@@ -43,9 +48,14 @@ namespace BehanceBot
             Cons.WriteLine($"{Name}: authorization.");                             
             Сhrome.OpenUrl(@"https://www.behance.net/search");
 
+            if (Сhrome.FindWebElement(By.XPath("//a[@aria-label ='Создать проект']")) != null)
+            {
+                Cons.WriteLine($"{Name}: Пользователь авторизован.");
+                return true;
+            }
+
             //---Enter---
-            string xpath = "//button[@class='Btn-button-BGn Btn-base-M-O Btn-normal-hI4 js-adobeid-signin PrimaryNav-a11yButton-2Cl']";
-            IWebElement Element = Сhrome.FindWebElement(By.XPath(xpath));
+            IWebElement Element = Сhrome.FindWebElement(By.XPath("//*[@id='app']/div/div/div[1]/div/div[2]/div[2]/ul/li[1]/div/button"));
             Element.Click();
             
             Thread.Sleep(timeSleep);

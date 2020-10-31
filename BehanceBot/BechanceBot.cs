@@ -31,11 +31,13 @@ namespace BehanceBot
 
         private void BehBotForm_Load(object sender, EventArgs e)
         {
-            Task.Run(() => Launch(new SubscriberBot(console, fileReader), 200));
-            Task.Run(() => Launch(new LikeBot(console, fileReader), 200));
-            Task.Run(() => Launch(new UnsubscribeBot(console, fileReader), 220));
-            Task.Run(() => Launch(new WorkAddBoardBot(console, fileReader), 200));
-            Task.Run(() => TimerEnd(TimeSpan.FromHours(3)));
+           // Task.Run(() => Launch(new SubscriberBot(console, fileReader), 200));
+           // Task.Run(() => Launch(new LikeBot(console, fileReader), 200));
+           // Task.Run(() => Launch(new UnsubscribeBot(console, fileReader), 220));
+           // Task.Run(() => Launch(new WorkAddBoardBot(console, fileReader), 300));
+            Task.Run(() => Launch(new WorkAddBoardBot(console, fileReader), 100));
+            //Task.Run(() => Launch(new WorkAddBoardBot(console, fileReader), 300));
+            Task.Run(() => TimerEnd(TimeSpan.FromHours(1)));
         }
 
 

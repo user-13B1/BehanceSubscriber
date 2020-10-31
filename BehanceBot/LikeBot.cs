@@ -24,10 +24,11 @@ namespace BehanceBot
 
                     if (like_counter >= limit)
                         return;
-
+                   
+                    
                     if (IsBlock())
                         return;
-
+                  
                     if (!Сhrome.Scroll(xpathUser))
                     {
                         Cons.WriteLine("End following list");
@@ -38,7 +39,7 @@ namespace BehanceBot
                     {
                         LikePhoto(userUrl);
                         like_counter++;
-                        Cons.WriteLine($"Like! Number of likes = {like_counter}");
+                        Cons.WriteLine($" Bot:{botNum} Like! Number of likes = {like_counter}");
                     }
 
                     Thread.Sleep(200);
