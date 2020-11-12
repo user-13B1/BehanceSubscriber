@@ -8,7 +8,7 @@ namespace BehanceBot
     internal class UnsubscribeBot : Bot
     {
 
-        public UnsubscribeBot(Writer Cons, FileReaderWriter fileReader) : base(Cons, fileReader)
+        public UnsubscribeBot(Writer Cons, FileReaderWriter fileReader, DBmanager db) : base(Cons, fileReader,db)
         {
             Name = "UnFollowingBot";
         }

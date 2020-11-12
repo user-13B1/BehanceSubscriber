@@ -13,18 +13,18 @@ namespace BehanceBot
         internal string Name { get; set; }
         internal string UserXpath { get; set; }
         static int profileCounter = 0;
-        internal int botNum;
+        internal int numberBot;
+        protected DBmanager db;
 
-        public Bot(Writer console, FileReaderWriter fileReader)
+        public Bot(Writer console, FileReaderWriter fileReader, DBmanager db)
         {
-        
             UserXpath = "//*[@id='app']/div/div/div[19]/div/div[1]/div/div[2]/div/div[2]/div/div[1]/ul/li[";
             Cons = console;
             FileReader = fileReader;
             Сhrome = new ChromeBrowser((++profileCounter).ToString());
-            botNum = profileCounter;
+            numberBot = profileCounter;
             Сhrome.SetWindowSize(1280, 1000);
-
+            this.db = db;
         }
 
         internal bool IsBlock()
@@ -35,7 +35,6 @@ namespace BehanceBot
                 Cons.WriteLine($"Limit error.");
                 return true;
             }
-
             return false;
         }
 
@@ -50,7 +49,7 @@ namespace BehanceBot
 
             if (Сhrome.FindWebElement(By.XPath("//a[@aria-label ='Создать проект']")) != null)
             {
-                Cons.WriteLine($"{Name}: Пользователь авторизован.");
+                Cons.WriteLine($"{Name}: authorization - ok.");
                 return true;
             }
 
@@ -91,7 +90,10 @@ namespace BehanceBot
             if (!Int32.TryParse(text, out _))
             {
                 text = text.Replace(" ", string.Empty);
-                text = text.Replace("тыс.", "000");
+                text = text.Replace(".", string.Empty);
+                text = text.Replace("тыс", "000");
+                text = text.Replace("млн", "000000");
+              
                 if (text.IndexOf(',') > 0)
                 {
                     text = text.Replace(",", string.Empty);
@@ -124,6 +126,7 @@ namespace BehanceBot
 
         internal void Close()
         {
+            
             Cons.WriteLine($"{Name}: Close.");
             Сhrome.Quit();
         }

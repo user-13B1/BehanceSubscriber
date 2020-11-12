@@ -13,21 +13,21 @@ namespace BehanceBot
 
     internal class FileReaderWriter
     {
-        private readonly string data_path_dir;
+        private readonly string dataPathDir;
         private readonly string message_log_txt_path;
         readonly string urls_path = @"\Urls.txt";
         readonly List<string> buffer_mes_list;
 
         public FileReaderWriter()
         {
-            data_path_dir = Directory.GetCurrentDirectory();
+            dataPathDir = Directory.GetCurrentDirectory();
             buffer_mes_list = new List<string>();
 
-            if (!Directory.Exists(data_path_dir))
+            if (!Directory.Exists(dataPathDir))
             {
                 try
                 {
-                    Directory.CreateDirectory(data_path_dir); //создаем директорию лога
+                    Directory.CreateDirectory(dataPathDir); //создаем директорию лога
                 }
                 catch
                 {
@@ -35,13 +35,13 @@ namespace BehanceBot
                 }
             }
 
-            if (Directory.Exists(data_path_dir))
+            if (Directory.Exists(dataPathDir))
             {
                 
-                message_log_txt_path = this.data_path_dir + @"\log_message.txt";
+                message_log_txt_path = this.dataPathDir + @"\log_message.txt";
             }
 
-            if (!File.Exists(data_path_dir + urls_path))
+            if (!File.Exists(dataPathDir + urls_path))
             {
                 MessageBox.Show("Рабочая директория не найдена.", "Ошибка.");
             }
@@ -75,7 +75,7 @@ namespace BehanceBot
                 return;
             try
             {
-                if (Directory.Exists(data_path_dir))
+                if (Directory.Exists(dataPathDir))
                 {
                     using (StreamWriter sw = new StreamWriter(message_log_txt_path, true, Encoding.Default))
                     {
@@ -109,7 +109,7 @@ namespace BehanceBot
 
         private void DeletStringFromFile(int value)
         {
-            string pathFile = data_path_dir + urls_path;
+            string pathFile = dataPathDir + urls_path;
 
             string[] readText = File.ReadAllLines(pathFile);
            
@@ -128,7 +128,7 @@ namespace BehanceBot
         public List<string> ScanFileList()
         {
             List<string> arrTag = new List<string>();
-            string pathFile = data_path_dir + urls_path;
+            string pathFile = dataPathDir + urls_path;
 
             using (StreamReader sr = new StreamReader(pathFile, Encoding.Default))
             {
@@ -151,7 +151,7 @@ namespace BehanceBot
 
         internal void WriteUrltoFile(string url_persona)
         {
-            string pathFile = data_path_dir + urls_path;
+            string pathFile = dataPathDir + urls_path;
             try
             {
                 using (StreamWriter sw = new StreamWriter(pathFile, true, System.Text.Encoding.Default))

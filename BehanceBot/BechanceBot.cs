@@ -25,30 +25,29 @@ namespace BehanceBot
             Location = new Point(1600, 100);
 
             fileReader = new FileReaderWriter();
-            console = new Writer(this, fileReader);    
-            bots = new List<Bot>(4);
+            console = new Writer(this, fileReader);
+           
+            bots = new List<Bot>(5);
         }
 
         private void BehBotForm_Load(object sender, EventArgs e)
         {
-           // Task.Run(() => Launch(new SubscriberBot(console, fileReader), 200));
-           // Task.Run(() => Launch(new LikeBot(console, fileReader), 200));
-           // Task.Run(() => Launch(new UnsubscribeBot(console, fileReader), 220));
-           // Task.Run(() => Launch(new WorkAddBoardBot(console, fileReader), 300));
-            Task.Run(() => Launch(new WorkAddBoardBot(console, fileReader), 100));
-            //Task.Run(() => Launch(new WorkAddBoardBot(console, fileReader), 300));
-            Task.Run(() => TimerEnd(TimeSpan.FromHours(1)));
+            DBmanager db = new DBmanager(console);
+            Task.Run(() => Launch(new SubscriberBot(console, fileReader, db), 200));
+            //Task.Run(() => Launch(new LikeBot(console, fileReader, db), 200));
+            //Task.Run(() => Launch(new UnsubscribeBot(console, fileReader,  db), 310));
+            //for (int i = 0; i < 2; i++)
+            //    Task.Run(() => Launch(new WorkAddBoardBot(console, fileReader,  db), 300));
+
+            Task.Run(() => TimerEnd(TimeSpan.FromHours(2)));
         }
 
 
         private void Launch(Bot bot,int limit)
         {
             bots.Add(bot);
-
             bot.Autorize(textBoxLogin.Text, textBoxPassword.Text);
-            
             bot.Start(limit);
-            
             Close(bot);
         }
 

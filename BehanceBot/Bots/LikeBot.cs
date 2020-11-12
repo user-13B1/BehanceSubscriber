@@ -7,7 +7,7 @@ namespace BehanceBot
 {
     internal class LikeBot : Bot
     {
-        public LikeBot(Writer Cons, FileReaderWriter fileReader) : base(Cons, fileReader)
+        public LikeBot(Writer Cons, FileReaderWriter fileReader, DBmanager db) : base(Cons, fileReader,db)
         {
             Name = "LikeBot";
         }
@@ -39,7 +39,7 @@ namespace BehanceBot
                     {
                         LikePhoto(userUrl);
                         like_counter++;
-                        Cons.WriteLine($" Bot:{botNum} Like! Number of likes = {like_counter}");
+                        Cons.WriteLine($" Bot:{numberBot} Like! Number of likes = {like_counter}");
                     }
 
                     Thread.Sleep(200);
