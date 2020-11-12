@@ -5,6 +5,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using System.Data.Linq.Mapping;
+using System.Runtime.InteropServices.WindowsRuntime;
+using LiteDB;
+using System.Linq;
+using System.IO;
+
 
 namespace BehanceBot
 {
@@ -26,19 +32,17 @@ namespace BehanceBot
 
             fileReader = new FileReaderWriter();
             console = new Writer(this, fileReader);
-           
-            bots = new List<Bot>(5);
+            bots = new List<Bot>();
         }
 
         private void BehBotForm_Load(object sender, EventArgs e)
         {
             DBmanager db = new DBmanager(console);
-            Task.Run(() => Launch(new SubscriberBot(console, fileReader, db), 200));
+            //Task.Run(() => Launch(new SubscriberBot(console, fileReader, db), 200));
             //Task.Run(() => Launch(new LikeBot(console, fileReader, db), 200));
             //Task.Run(() => Launch(new UnsubscribeBot(console, fileReader,  db), 310));
-            //for (int i = 0; i < 2; i++)
-            //    Task.Run(() => Launch(new WorkAddBoardBot(console, fileReader,  db), 300));
-
+            for (int i = 0; i < 6; i++)
+                Task.Run(() => Launch(new WorkSaveBoardBot(console, fileReader,  db), 300));
             Task.Run(() => TimerEnd(TimeSpan.FromHours(2)));
         }
 

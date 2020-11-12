@@ -18,60 +18,100 @@ namespace BehanceBot
     class DBmanager
     {
         readonly Writer cons;
-        private LiteDatabase db;
-        ILiteCollection<BehanceUsers> collection
+        private readonly LiteDatabase liteDB;
+        private readonly ILiteCollection<BehanceUsers> collection;
         public DBmanager(Writer cons)
         {
             this.cons = cons;
-            db = new LiteDatabase(Directory.GetCurrentDirectory() + @"\Data.db");
-            collection = db.GetCollection<BehanceUsers>("ParseBehanceUsers");
+            liteDB = new LiteDatabase(Directory.GetCurrentDirectory() + @"\Data.db");
+            collection = liteDB.GetCollection<BehanceUsers>("ParseBehanceUsers");
+          
         }
 
-        internal void AddForSubsList(string url)
+        internal void AddUser(string url,Byte donorsubs,Byte formerfriend, Byte friend)
         {
+            if(IsRepeat(url))
+                return;
+
             var newUser = new BehanceUsers
             {
                 Url = url,
                 Date = DateTime.Now,
-                donorsubs = 1,
-                formerfriend = 0,
-                friend = 0
+                Donorsubs = donorsubs,
+                Formerfriend = formerfriend,
+                Friend = friend
             };
             collection.Insert(newUser);
         }
 
-        internal void AddToFriend(string url)
+        internal string GetRandomUrl()
         {
-            var newUser = new BehanceUsers
+            string url;
+            var query = collection.Query()
+               .Where(u => u.Donorsubs == 1 )
+               .Limit(1)
+               .ToList();
+           
+            if (query.Count() != 0)
             {
-                Url = url,
-                Date = DateTime.Now,
-                donorsubs = 0,
-                formerfriend = 0,
-                friend = 1
-            };
-            collection.Insert(newUser);
-        }
+                var user = query.First();
+                url = user.Url;
+                user.Donorsubs = 0;
+                collection.Update(user);
+            }
+            else
+            {
+                url = @"https://www.behance.net/balakir";
+            }
 
+            return url;
+        }
 
         internal bool IsRepeat(string url)
         {
-            ILiteCollection<BehanceUsers> collection = db.GetCollection<BehanceUsers>("ParseBehanceUsers");
-
             var query = collection.Query()
                 .Where(u => u.Url == url);
 
             if (query.Count() != 0)
             {
-                cons.WriteLine($"Repeat account.");
                 return true;
             }
             else
                 return false;
-
-
         }
 
+        internal bool UpdateUser(string url, Byte donorsubs, Byte formerfriend, Byte friend)
+        {
+            var query = collection.Query()
+              .Where(u => u.Url == url)
+              .Limit(1)
+              .ToList();
+
+            if (query.Count() != 0)
+            {
+                var user = query.First();
+                user.Donorsubs = donorsubs;
+                user.Donorsubs = formerfriend;
+                user.Donorsubs = friend;
+
+                if (collection.Update(user))
+                {
+                    cons.WriteLine("User - update.");
+                    return true;
+                }
+                else
+                {
+                    cons.WriteLine("User - error update.");
+                    return false;
+                }
+            }
+            else
+            {
+                cons.WriteLine("Update user not found.Add new user.");
+                AddUser(url,donorsubs,formerfriend,friend);
+                return false;
+            }
+        }
 
         [Table(Name = "ParseInstagramUsers")]
         public class BehanceUsers
@@ -80,13 +120,13 @@ namespace BehanceBot
             public int Id { get; set; }
             public string Url { get; set; }
             public DateTime Date { get; set; }
-            public Byte donorsubs { get; set; }
-            public Byte formerfriend { get; set; }
-            public Byte friend { get; set; }
+            public Byte Donorsubs { get; set; }
+            public Byte Formerfriend { get; set; }
+            public Byte Friend { get; set; }
       
         }
 
-    
+
     }
 }
 

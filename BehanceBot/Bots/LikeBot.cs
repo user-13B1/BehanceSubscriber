@@ -7,43 +7,41 @@ namespace BehanceBot
 {
     internal class LikeBot : Bot
     {
+        static int like_counter;
         public LikeBot(Writer Cons, FileReaderWriter fileReader, DBmanager db) : base(Cons, fileReader,db)
         {
             Name = "LikeBot";
+            
         }
 
         internal override void Start(int limit)
         {
-            int like_counter = 0;
-            for (int j = 0; j < 30; j++)
+            while(true)
             {
                 OpenRandomPage();
+                Thread.Sleep(300);
                 for (int i = 3; i < 3000; i++)
                 {
-                    string xpathUser = UserXpath + i + "]";
+                    string xpathNextUser = UserXpath + i + "]";
 
                     if (like_counter >= limit)
                         return;
-                   
                     
                     if (IsBlock())
                         return;
                   
-                    if (!Сhrome.Scroll(xpathUser))
-                    {
-                        Cons.WriteLine("End following list");
+                    if (!Сhrome.Scroll(xpathNextUser))
                         break;
-                    }
-
-                    if (CheckUser(xpathUser, out string userUrl))
+                    if (CheckUser(xpathNextUser, out string userUrl, out _, out _, out _))
                     {
                         LikePhoto(userUrl);
                         like_counter++;
-                        Cons.WriteLine($" Bot:{numberBot} Like! Number of likes = {like_counter}");
+                        Cons.WriteLine($"Like!#{like_counter}");
+                        db.AddUser(userUrl,0,0,0);
                     }
 
-                    Thread.Sleep(200);
                 }
+                Cons.WriteLine("End following list");
             }
 
 
@@ -52,17 +50,15 @@ namespace BehanceBot
                 Сhrome.OpenUrlNewTab(userUrl);
 
                 IWebElement Element_photo = Сhrome.FindWebElement(By.XPath(@"//*[@id='site-content']/div/main/div[2]/div[2]/div/div/div/div/div[1]/div[1]/div/div/div[2]/a"));
-                string url_photo = Element_photo.GetAttribute("href");
-                Сhrome.OpenUrl(url_photo);
-
+                Сhrome.OpenUrl(Element_photo.GetAttribute("href"));
                 Thread.Sleep(300);
-
+                
                 if (!Сhrome.ClickButtonXPath(@"//div[.='Оценить']"))
                 {
-                    Cons.WriteLine($"Error like");
+                    Cons.WriteLine($"Error like!");
                 }
 
-                Thread.Sleep(500);
+                Thread.Sleep(1000);
                 Сhrome.CloseAndReturnTab();
             }
 

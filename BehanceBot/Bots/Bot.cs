@@ -15,13 +15,15 @@ namespace BehanceBot
         static int profileCounter = 0;
         internal int numberBot;
         protected DBmanager db;
+        protected static int repeatCounter;
 
         public Bot(Writer console, FileReaderWriter fileReader, DBmanager db)
         {
             UserXpath = "//*[@id='app']/div/div/div[19]/div/div[1]/div/div[2]/div/div[2]/div/div[1]/ul/li[";
             Cons = console;
             FileReader = fileReader;
-            Сhrome = new ChromeBrowser((++profileCounter).ToString());
+            string chromeProfileName = (++profileCounter).ToString() + "BehanceBot";
+            Сhrome = new ChromeBrowser(chromeProfileName);
             numberBot = profileCounter;
             Сhrome.SetWindowSize(1280, 1000);
             this.db = db;
@@ -80,9 +82,7 @@ namespace BehanceBot
 
         internal void OpenRandomPage()
         {
-            string s_randPage = FileReader.GetRandomUrl();
-            Cons.WriteLine($"Open random page {s_randPage}");
-            Сhrome.OpenUrl(s_randPage);
+            Сhrome.OpenUrl(db.GetRandomUrl() + "/followers");
         }
 
         internal int ParsToInt(string text)
@@ -109,16 +109,30 @@ namespace BehanceBot
 
         internal abstract void Start(int limit);
 
-        internal bool CheckUser(string xpath, out string userUrl)
+        internal bool CheckUser(string xpath, out string userUrl,out int userCountLike, out int userCountViews, out string userName)
         {
-            int likePersona = ParsToInt(Сhrome.FindWebElement(By.XPath(xpath + @"/div/div/div/div[2]/div[3]/span")).Text);
-            int numViews = ParsToInt(Сhrome.FindWebElement(By.XPath(xpath + @"/div/div/div/div[2]/div[4]/span")).Text);
+            userCountLike = ParsToInt(Сhrome.FindWebElement(By.XPath(xpath + @"/div/div/div/div[2]/div[3]/span")).Text);
+            userCountViews = ParsToInt(Сhrome.FindWebElement(By.XPath(xpath + @"/div/div/div/div[2]/div[4]/span")).Text);
             string buttonText = Сhrome.FindWebElement(By.XPath(xpath + @"/div/div/div/div[2]/div[1]/div/a[1]/span")).Text;
 
             IWebElement Element = Сhrome.FindWebElement(By.XPath(xpath + @"/div/div/div/div[1]/h3/a"));
             userUrl = Element.GetAttribute("href");
+            userName = Element.Text;
 
-            if (likePersona < 100 && likePersona > 10 && numViews < 999 && numViews > 30 && buttonText == "Подписаться")
+            if (db.IsRepeat(userUrl))
+            {
+                Cons.WriteLine($"{Name}:Repeat account. {repeatCounter++}");
+                repeatCounter++;
+                return false;
+            }
+
+            if (userCountViews > 10000)
+            {
+                Cons.WriteLine($"{Name}:{userName} - Add for subscribe ");
+                db.AddUser(userUrl,1,0,0);
+            }
+
+            if (userCountLike < 100 && userCountLike > 10 && userCountViews < 999 && userCountViews > 30 && buttonText == "Подписаться")
                 return true;
 
             return false;

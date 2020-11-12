@@ -74,7 +74,7 @@
     <Compile Include="Class\Writer.cs" />
     <Compile Include="Bots\SubscriberBot.cs" />
     <Compile Include="Bots\UnsubscribeBot.cs" />
-    <Compile Include="Bots\WorkAddBoardBot.cs" />
+    <Compile Include="Bots\WorkSaveBoardBot.cs" />
     <EmbeddedResource Include="BechanceBot.resx">
       <DependentUpon>BechanceBot.cs</DependentUpon>
     </EmbeddedResource>
