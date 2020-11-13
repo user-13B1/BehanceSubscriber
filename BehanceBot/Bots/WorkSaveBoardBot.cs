@@ -52,7 +52,6 @@ namespace BehanceBot
         private void AddImageToBoard(string userUrl)
         {
             Сhrome.OpenUrlNewTab(userUrl);
-
             IWebElement Element_photo = Сhrome.FindWebElement(By.XPath(@"//*[@id='site-content']/div/main/div[2]/div[2]/div/div/div/div/div[1]/div[1]/div/div/div[2]/a"));
 
             if (Element_photo == null)

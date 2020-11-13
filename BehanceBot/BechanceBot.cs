@@ -38,10 +38,10 @@ namespace BehanceBot
         private void BehBotForm_Load(object sender, EventArgs e)
         {
             DBmanager db = new DBmanager(console);
-            //Task.Run(() => Launch(new SubscriberBot(console, fileReader, db), 200));
-            //Task.Run(() => Launch(new LikeBot(console, fileReader, db), 200));
-            //Task.Run(() => Launch(new UnsubscribeBot(console, fileReader,  db), 310));
-            for (int i = 0; i < 6; i++)
+            Task.Run(() => Launch(new SubscriberBot(console, fileReader, db), 200));
+            Task.Run(() => Launch(new LikeBot(console, fileReader, db), 200));
+            Task.Run(() => Launch(new UnsubscribeBot(console, fileReader,  db), 310));
+            for (int i = 0; i < 2; i++)
                 Task.Run(() => Launch(new WorkSaveBoardBot(console, fileReader,  db), 300));
             Task.Run(() => TimerEnd(TimeSpan.FromHours(2)));
         }
