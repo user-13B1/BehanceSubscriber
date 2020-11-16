@@ -33,6 +33,7 @@
             this.directoryEntry1 = new System.DirectoryServices.DirectoryEntry();
             this.textBoxLogin = new System.Windows.Forms.TextBox();
             this.textBoxPassword = new System.Windows.Forms.TextBox();
+            this.EditButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // txtConsole1
@@ -47,27 +48,41 @@
             // 
             this.textBoxLogin.Location = new System.Drawing.Point(12, 150);
             this.textBoxLogin.Name = "textBoxLogin";
-            this.textBoxLogin.Size = new System.Drawing.Size(130, 20);
+            this.textBoxLogin.ReadOnly = true;
+            this.textBoxLogin.Size = new System.Drawing.Size(110, 20);
             this.textBoxLogin.TabIndex = 3;
             this.textBoxLogin.Text = "Login";
             this.textBoxLogin.TextChanged += new System.EventHandler(this.TextBoxLogin_TextChanged);
             // 
             // textBoxPassword
             // 
-            this.textBoxPassword.Location = new System.Drawing.Point(154, 150);
+            this.textBoxPassword.Location = new System.Drawing.Point(128, 150);
             this.textBoxPassword.MaxLength = 100;
             this.textBoxPassword.Name = "textBoxPassword";
-            this.textBoxPassword.Size = new System.Drawing.Size(130, 20);
+            this.textBoxPassword.ReadOnly = true;
+            this.textBoxPassword.Size = new System.Drawing.Size(110, 20);
             this.textBoxPassword.TabIndex = 4;
             this.textBoxPassword.Text = "Password";
             this.textBoxPassword.UseSystemPasswordChar = true;
             this.textBoxPassword.TextChanged += new System.EventHandler(this.TextBoxPassword_TextChanged);
             // 
+            // EditButton
+            // 
+            this.EditButton.Location = new System.Drawing.Point(244, 148);
+            this.EditButton.Name = "EditButton";
+            this.EditButton.Size = new System.Drawing.Size(40, 23);
+            this.EditButton.TabIndex = 5;
+            this.EditButton.Text = "Edit";
+            this.EditButton.UseVisualStyleBackColor = true;
+            this.EditButton.Click += new System.EventHandler(this.EditButton_Click);
+            // 
             // BehBotForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(302, 188);
+            this.BackColor = System.Drawing.SystemColors.Control;
+            this.ClientSize = new System.Drawing.Size(295, 188);
+            this.Controls.Add(this.EditButton);
             this.Controls.Add(this.textBoxPassword);
             this.Controls.Add(this.textBoxLogin);
             this.Controls.Add(this.txtConsole1);
@@ -90,6 +105,7 @@
         private System.DirectoryServices.DirectoryEntry directoryEntry1;
         private System.Windows.Forms.TextBox textBoxLogin;
         private System.Windows.Forms.TextBox textBoxPassword;
+        private System.Windows.Forms.Button EditButton;
     }
 }
 

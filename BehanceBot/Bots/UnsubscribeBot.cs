@@ -24,7 +24,7 @@ namespace BehanceBot
             Сhrome.ClickButtonXPath(mySubs_xPath);
             Thread.Sleep(TimeSpan.FromSeconds(1));
 
-            if (subsCount <= 400)
+            if (subsCount <= 600)
             {
                 Cons.WriteLine("The number of subscriptions is not enough to start unsubscribing.");
                 return;

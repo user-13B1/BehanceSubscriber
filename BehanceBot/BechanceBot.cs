@@ -4,7 +4,7 @@ using System.Drawing;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-
+using System.Diagnostics;
 using System.Data.Linq.Mapping;
 using System.Runtime.InteropServices.WindowsRuntime;
 using LiteDB;
@@ -19,7 +19,8 @@ namespace BehanceBot
         private readonly Writer console;
         private readonly FileReaderWriter fileReader;
         private readonly List<Bot> bots;
-
+        DBmanager db;
+        static bool editFlag;
         public BehBotForm()
         {
             InitializeComponent();
@@ -37,12 +38,11 @@ namespace BehanceBot
 
         private void BehBotForm_Load(object sender, EventArgs e)
         {
-            DBmanager db = new DBmanager(console);
+            db = new DBmanager(console);
             Task.Run(() => Launch(new SubscriberBot(console, fileReader, db), 200));
             Task.Run(() => Launch(new LikeBot(console, fileReader, db), 200));
-            Task.Run(() => Launch(new UnsubscribeBot(console, fileReader,  db), 310));
-            for (int i = 0; i < 2; i++)
-                Task.Run(() => Launch(new WorkSaveBoardBot(console, fileReader,  db), 300));
+            Task.Run(() => Launch(new UnsubscribeBot(console, fileReader, db), 250));
+            Task.Run(() => Launch(new WorkSaveBoardBot(console, fileReader, db), 300));
             Task.Run(() => TimerEnd(TimeSpan.FromHours(2)));
         }
 
@@ -69,6 +69,7 @@ namespace BehanceBot
 
         private void TimerEnd(TimeSpan timeSpan)
         {
+           
             Thread.Sleep(timeSpan);
             foreach (Bot bot in bots)
             {
@@ -90,7 +91,26 @@ namespace BehanceBot
         }
         private void BehBotForm_FormClosed(object sender, FormClosedEventArgs e)
         {
+            db.CloseBase();
             Properties.Settings.Default.Save();
+        }
+
+        private void EditButton_Click(object sender, EventArgs e)
+        {
+            if(editFlag)
+            {
+                textBoxLogin.ReadOnly = true;
+                textBoxPassword.ReadOnly = true;
+                textBoxPassword.UseSystemPasswordChar = true;
+            }
+            else
+            {
+                textBoxLogin.ReadOnly = false;
+                textBoxPassword.ReadOnly = false;
+                textBoxPassword.UseSystemPasswordChar = false;
+            }
+            editFlag = !editFlag;
+
         }
     }
 }

@@ -44,7 +44,7 @@ namespace BehanceBot
         {
             int timeSleep = 2000;
 #if DEBUG
-            timeSleep /= 10;
+            timeSleep /= 2;
 #endif
             Cons.WriteLine($"{Name}: authorization.");                             
             Сhrome.OpenUrl(@"https://www.behance.net/search");
@@ -60,22 +60,21 @@ namespace BehanceBot
             Element.Click();
             
             Thread.Sleep(timeSleep);
-            Сhrome.SendKeysXPath(@".//input[@id='EmailPage-EmailField']", v1);
+            Сhrome.SendKeysXPath(".//input[@id='EmailPage-EmailField']", v1);
             Thread.Sleep(timeSleep);
-            Сhrome.ClickButtonXPath(@".//*[@id='EmailForm']/section[2]/div[2]/button");
+            Сhrome.ClickButtonXPath(".//*[@id='EmailForm']/section[2]/div[2]/button");
             Thread.Sleep(timeSleep);
-            Сhrome.SendKeysXPath(@".//input[@id='PasswordPage-PasswordField']", v2);
+            Сhrome.SendKeysXPath(".//input[@id='PasswordPage-PasswordField']", v2);
             Thread.Sleep(timeSleep);
-            Сhrome.ClickButtonXPath(@".//*[@id='PasswordForm']/section[2]/div[2]/button");
-            Thread.Sleep(timeSleep);
-            
-            if (!Сhrome.ClickButtonXPath(@"./html/body/nav/ul[2]/li[4]/a"))
+            Сhrome.ClickButtonXPath(".//*[@id='PasswordForm']/section[2]/div[2]/button");
+            Thread.Sleep(TimeSpan.FromSeconds(6));
+
+            Сhrome.OpenUrl(@"https://www.behance.net");
+            if (Сhrome.FindWebElement(By.XPath("//*[contains(text(), 'Создать проект')]"))==null)
             {
-                Cons.WriteLine($"{Name}: Authorisation Error.");
+                Cons.WriteLine($"{Name}: Error autorize.");
                 return false;
             }
-
-            Сhrome.ClickButtonXPath(@".//*[@id='app']/div/div/div[1]/main/div[2]/div[1]/div[2]/div[1]/div[2]/table/tbody/tr[3]/td[2]/a");
             Cons.WriteLine($"{Name}: Authorized.");
             return true;
         }
@@ -140,7 +139,6 @@ namespace BehanceBot
 
         internal void Close()
         {
-            
             Cons.WriteLine($"{Name}: Close.");
             Сhrome.Quit();
         }

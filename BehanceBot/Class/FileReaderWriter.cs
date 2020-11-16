@@ -15,7 +15,6 @@ namespace BehanceBot
     {
         private readonly string dataPathDir;
         private readonly string message_log_txt_path;
-        readonly string urls_path = @"\Urls.txt";
         readonly List<string> buffer_mes_list;
 
         public FileReaderWriter()
@@ -41,11 +40,7 @@ namespace BehanceBot
                 message_log_txt_path = this.dataPathDir + @"\log_message.txt";
             }
 
-            if (!File.Exists(dataPathDir + urls_path))
-            {
-                MessageBox.Show("Рабочая директория не найдена.", "Ошибка.");
-            }
-
+       
 
             Task.Run(() => LogWriteToFile(TimeSpan.FromSeconds(10))); // Таск записи сообщений консоли в файл.
 

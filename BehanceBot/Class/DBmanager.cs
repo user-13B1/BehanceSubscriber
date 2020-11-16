@@ -28,6 +28,12 @@ namespace BehanceBot
           
         }
 
+        public void CloseBase()
+        {
+            liteDB.Dispose();
+            Console.Beep();
+        }
+
         internal void AddUser(string url,Byte donorsubs,Byte formerfriend, Byte friend)
         {
             if(IsRepeat(url))
@@ -130,9 +136,3 @@ namespace BehanceBot
     }
 }
 
-//var results = col.Query()
-//.Where(x => x.Name.StartsWith("J"))
-//.OrderBy(x => x.Name)
-//.Select(x => new { x.Name, NameUpper = x.Name.ToUpper() })
-//.Limit(10)
-//.ToList();

@@ -11,15 +11,12 @@ namespace BehanceBot
         private readonly TextWriter _writer;
         private readonly FileReaderWriter file_reader;
 
-
         public Writer(BehBotForm Form, FileReaderWriter file_reader)
         {
             this.Form = Form;
-            
             this.file_reader = file_reader;
             _writer = new TextBoxStreamWriter(Form.txtConsole1);
             Console.SetOut(_writer);   // Перенаправляем выходной поток консоли   
-           
         }
        
         public void WriteLine(object s,bool log = true)
