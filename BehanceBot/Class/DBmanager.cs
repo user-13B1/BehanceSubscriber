@@ -31,7 +31,6 @@ namespace BehanceBot
         public void CloseBase()
         {
             liteDB.Dispose();
-            Console.Beep();
         }
 
         internal void AddUser(string url,Byte donorsubs,Byte formerfriend, Byte friend)

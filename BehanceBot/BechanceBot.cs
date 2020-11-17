@@ -10,6 +10,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using LiteDB;
 using System.Linq;
 using System.IO;
+using StackExchange.Redis;
 
 
 namespace BehanceBot
@@ -19,8 +20,10 @@ namespace BehanceBot
         private readonly Writer console;
         private readonly FileReaderWriter fileReader;
         private readonly List<Bot> bots;
+        List<Process> ProcessChromeDriver;
         DBmanager db;
         static bool editFlag;
+       
         public BehBotForm()
         {
             InitializeComponent();
@@ -38,12 +41,13 @@ namespace BehanceBot
 
         private void BehBotForm_Load(object sender, EventArgs e)
         {
+            Task.Run(() => Timer(TimeSpan.FromHours(2)));
             db = new DBmanager(console);
             Task.Run(() => Launch(new SubscriberBot(console, fileReader, db), 200));
             Task.Run(() => Launch(new LikeBot(console, fileReader, db), 200));
             Task.Run(() => Launch(new UnsubscribeBot(console, fileReader, db), 250));
             Task.Run(() => Launch(new WorkSaveBoardBot(console, fileReader, db), 300));
-            Task.Run(() => TimerEnd(TimeSpan.FromHours(2)));
+
         }
 
 
@@ -52,10 +56,10 @@ namespace BehanceBot
             bots.Add(bot);
             bot.Autorize(textBoxLogin.Text, textBoxPassword.Text);
             bot.Start(limit);
-            Close(bot);
+            CloseBot(bot);
         }
 
-        private void Close(Bot bot)
+        private void CloseBot(Bot bot)
         {
             bot.Close();
             bots.Remove(bot);
@@ -63,22 +67,45 @@ namespace BehanceBot
             {
                 console.WriteLine("All bot stoped. Application closed.");
                 Thread.Sleep(TimeSpan.FromSeconds(10));
-                Application.Exit();
+                CloseProgram();
             }
         }
 
-        private void TimerEnd(TimeSpan timeSpan)
+        private void Timer(TimeSpan timeSpan)
         {
-           
-            Thread.Sleep(timeSpan);
-            foreach (Bot bot in bots)
-            {
-                bot.Close();
-            }
+            ProcessChromeDriver = new List<Process>();
+            List<Process> processChromeDriverOld = Process.GetProcessesByName("chromedriver").ToList();
+            Thread.Sleep(TimeSpan.FromSeconds(15));
+            List<Process> ProcessChromeDriverNew = Process.GetProcessesByName("chromedriver").ToList();
 
+            
+            foreach (Process proces in ProcessChromeDriverNew)
+                if(processChromeDriverOld.Find(item => item.Id == proces.Id)==null)
+                    ProcessChromeDriver.Add(proces);
+                
+            foreach (Process proces in ProcessChromeDriver)
+                console.WriteLine($"proces: {proces.Id} ");
+
+            Thread.Sleep(timeSpan);
+            console.WriteLine("Timer End. Application closed.");
+            foreach (Bot bot in bots)
+                bot.Close();
             Thread.Sleep(TimeSpan.FromSeconds(10));
-            console.WriteLine("Timer went off. Application closed.");
+
+            CloseProgram();
+        }
+
+        private void CloseProgram()
+        {
+            db.CloseBase();
+            foreach (Process proces in ProcessChromeDriver)
+            {
+                console.WriteLine($"proces: {proces.Id} Close.");
+                proces.CloseMainWindow();
+            }
+            Properties.Settings.Default.Save();
             Application.Exit();
+
         }
 
         private void TextBoxLogin_TextChanged(object sender, EventArgs e)
@@ -91,8 +118,7 @@ namespace BehanceBot
         }
         private void BehBotForm_FormClosed(object sender, FormClosedEventArgs e)
         {
-            db.CloseBase();
-            Properties.Settings.Default.Save();
+            CloseProgram();
         }
 
         private void EditButton_Click(object sender, EventArgs e)
