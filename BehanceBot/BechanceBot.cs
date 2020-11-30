@@ -41,12 +41,12 @@ namespace BehanceBot
 
         private void BehBotForm_Load(object sender, EventArgs e)
         {
-            Task.Run(() => Timer(TimeSpan.FromHours(2)));
+            Task.Run(() => Timer(TimeSpan.FromHours(4)));
             db = new DBmanager(console);
             Task.Run(() => Launch(new SubscriberBot(console, fileReader, db), 200));
             Task.Run(() => Launch(new LikeBot(console, fileReader, db), 200));
             Task.Run(() => Launch(new UnsubscribeBot(console, fileReader, db), 250));
-            Task.Run(() => Launch(new WorkSaveBoardBot(console, fileReader, db), 300));
+            Task.Run(() => Launch(new WorkSaveBoardBot(console, fileReader, db), 5600));
 
         }
 
@@ -75,16 +75,13 @@ namespace BehanceBot
         {
             ProcessChromeDriver = new List<Process>();
             List<Process> processChromeDriverOld = Process.GetProcessesByName("chromedriver").ToList();
-            Thread.Sleep(TimeSpan.FromSeconds(15));
+            Thread.Sleep(TimeSpan.FromSeconds(10));
             List<Process> ProcessChromeDriverNew = Process.GetProcessesByName("chromedriver").ToList();
 
             
             foreach (Process proces in ProcessChromeDriverNew)
                 if(processChromeDriverOld.Find(item => item.Id == proces.Id)==null)
                     ProcessChromeDriver.Add(proces);
-                
-            foreach (Process proces in ProcessChromeDriver)
-                console.WriteLine($"proces: {proces.Id} ");
 
             Thread.Sleep(timeSpan);
             console.WriteLine("Timer End. Application closed.");
@@ -100,12 +97,11 @@ namespace BehanceBot
             db.CloseBase();
             foreach (Process proces in ProcessChromeDriver)
             {
-                console.WriteLine($"proces: {proces.Id} Close.");
-                proces.CloseMainWindow();
+                if (proces != null)
+                    proces.CloseMainWindow();
             }
             Properties.Settings.Default.Save();
             Application.Exit();
-
         }
 
         private void TextBoxLogin_TextChanged(object sender, EventArgs e)
@@ -116,10 +112,8 @@ namespace BehanceBot
         {
             Properties.Settings.Default.password = textBoxPassword.Text;
         }
-        private void BehBotForm_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            CloseProgram();
-        }
+        private void BehBotForm_FormClosed(object sender, FormClosedEventArgs e) => CloseProgram();
+        
 
         private void EditButton_Click(object sender, EventArgs e)
         {

@@ -19,7 +19,8 @@ namespace BehanceBot
 
         public Bot(Writer console, FileReaderWriter fileReader, DBmanager db)
         {
-            UserXpath = "//*[@id='app']/div/div/div[19]/div/div[1]/div/div[2]/div/div[2]/div/div[1]/ul/li[";
+           
+            UserXpath = "//div[@data-ut = 'qa-FollowPopup-follow-content']/div[1]/ul";
             Cons = console;
             FileReader = fileReader;
             string chromeProfileName = (++profileCounter).ToString() + "BehanceBot";
@@ -56,9 +57,10 @@ namespace BehanceBot
             }
 
             //---Enter---
-            IWebElement Element = Сhrome.FindWebElement(By.XPath("//*[@id='app']/div/div/div[1]/div/div[2]/div[2]/ul/li[1]/div/button"));
+            IWebElement Element = Сhrome.FindWebElement(By.XPath("//li/div/button[contains(.,'Вход')]"));
             Element.Click();
-            
+
+
             Thread.Sleep(timeSleep);
             Сhrome.SendKeysXPath(".//input[@id='EmailPage-EmailField']", v1);
             Thread.Sleep(timeSleep);
@@ -67,7 +69,7 @@ namespace BehanceBot
             Сhrome.SendKeysXPath(".//input[@id='PasswordPage-PasswordField']", v2);
             Thread.Sleep(timeSleep);
             Сhrome.ClickButtonXPath(".//*[@id='PasswordForm']/section[2]/div[2]/button");
-            Thread.Sleep(TimeSpan.FromSeconds(6));
+            Thread.Sleep(TimeSpan.FromSeconds(7));
 
             Сhrome.OpenUrl(@"https://www.behance.net");
             if (Сhrome.FindWebElement(By.XPath("//*[contains(text(), 'Создать проект')]"))==null)
@@ -79,9 +81,13 @@ namespace BehanceBot
             return true;
         }
 
-        internal void OpenRandomPage()
+        internal bool OpenRandomFollowerPage()
         {
             Сhrome.OpenUrl(db.GetRandomUrl() + "/followers");
+            if (Сhrome.FindWebElement(By.XPath(UserXpath)) == null)
+                return false;
+            return true;
+
         }
 
         internal int ParsToInt(string text)

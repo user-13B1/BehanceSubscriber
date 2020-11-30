@@ -18,11 +18,12 @@ namespace BehanceBot
         {
             while(true)
             {
-                OpenRandomPage();
-                Thread.Sleep(300);
+                if(!OpenRandomFollowerPage())
+                    return;
+
                 for (int i = 3; i < 3000; i++)
                 {
-                    string xpathNextUser = UserXpath + i + "]";
+                    string xpathNextUser = UserXpath + "/li[" + i + "]";
 
                     if (like_counter >= limit)
                         return;

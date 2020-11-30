@@ -18,12 +18,15 @@ namespace BehanceBot
 
         internal override void Start(int limit)
         {
-            while(true)
+            for (int j = 0; j < 10; j++)
             {
-                OpenRandomPage();
+                if (!OpenRandomFollowerPage())
+                    return;
+
+
                 for (int i = 3; i < 3000; i++)
                 {
-                    string xpathNextUser = UserXpath + i + "]";
+                    string xpathNextUser = UserXpath + "/li[" + i + "]";
 
                     if (imageAddBoard_counter >= limit)
                         return;
@@ -52,11 +55,16 @@ namespace BehanceBot
         private void AddImageToBoard(string userUrl)
         {
             Сhrome.OpenUrlNewTab(userUrl);
-            IWebElement Element_photo = Сhrome.FindWebElement(By.XPath(@"//*[@id='site-content']/div/main/div[2]/div[2]/div/div/div/div/div[1]/div[1]/div/div/div[2]/a"));
+            IWebElement Element_photo = Сhrome.FindWebElement(By.XPath("//div[@class = 'e2e-Work']/div/div[1]/div[1]/div/div/div[2]/a"));
+
 
             if (Element_photo == null)
-                Element_photo = Сhrome.FindWebElement(By.XPath(@"//*[@id='site-content']/div/main/div[2]/div[2]/div/div/div/div/div[1]/div[1]/div/div[2]/a"));
-
+            {
+                Cons.WriteLine($"AddImageToBoard. v2 {userUrl}");
+                Сhrome.CloseAndReturnTab();
+                return;
+            }
+                                                            
             string url_photo = Element_photo.GetAttribute("href");
             Сhrome.OpenUrl(url_photo);
 

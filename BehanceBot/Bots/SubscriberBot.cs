@@ -18,11 +18,12 @@ namespace BehanceBot
 
     internal override void Start(int limit)
         {
-            OpenRandomPage();
-            
+            if (!OpenRandomFollowerPage())
+                return;
+
             for (int i = 3; i < 3000; i++)
             {
-                string xpathNextUser = UserXpath + i + "]";
+                string xpathNextUser = UserXpath + "/li[" +  i + "]";
                 
                 if (IsBlock())
                     return;
