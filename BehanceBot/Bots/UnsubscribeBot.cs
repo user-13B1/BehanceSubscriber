@@ -8,7 +8,7 @@ namespace BehanceBot
     internal class UnsubscribeBot : Bot
     {
 
-        public UnsubscribeBot(Writer Cons, FileReaderWriter fileReader, DBmanager db) : base(Cons, fileReader,db)
+        public UnsubscribeBot(Writer Cons, DBmanager db) : base(Cons, db)
         {
             Name = "UnFollowingBot";
         }
@@ -33,19 +33,16 @@ namespace BehanceBot
             if (Сhrome.FindWebElement(By.XPath(UserXpath)) == null)
                 return;
 
-            for (int i = 2; i < subsCount; i++) 
-            {
-                string xpath = UserXpath + "/li[" + i + "]";
-                Сhrome.Scroll(xpath);
-            }
+            for (int i = 2; i < subsCount; i++)
+                Сhrome.Scroll(string.Format($"{UserXpath}/li[{i}]"));
 
-            for (int i = subsCount - 3; i > 0; i--) 
+
+            for (int i = subsCount - 3; i > 0; i--)
             {
                 if (IsBlock())
                     return;
-
-                string xpath = UserXpath + i + "]";
-                Сhrome.Scroll(xpath);
+               ;
+                Сhrome.Scroll(string.Format($"{UserXpath}/li[{i}]"));
                 Thread.Sleep(3000);
                 Unsubscribe(i);
                 limit--;
@@ -59,13 +56,13 @@ namespace BehanceBot
         {
             j += 2;
            
-            IWebElement Element = Сhrome.FindWebElement(By.XPath(UserXpath + $@"{j}]//div/div/div/div[1]/h3/a"));
+            IWebElement Element = Сhrome.FindWebElement(By.XPath($"{UserXpath}/li[{j}]//div/div/div/div[1]/h3/a"));
             string userUrl = Element.GetAttribute("href");
             Cons.WriteLine($"Unsubscribe: {j}) {userUrl}", false);
             db.UpdateUser(userUrl, 0, 1, 0);
 
-            string btn_1 = UserXpath + $@"{j}]/div/div/div/div[2]/div[1]/div/a[2]";
-            string btn_2 = UserXpath + $@"{j}]/div/div/div/div[2]/div[1]/div/a[3]";
+            string btn_1 = $"{UserXpath}/li[{j}]/div/div/div/div[2]/div[1]/div/a[2]";
+            string btn_2 = $"{UserXpath}/li[{j}]/div/div/div/div[2]/div[1]/div/a[3]";
 
             IWebElement elem_button_1 = Сhrome.FindWebElement(By.XPath(btn_1));
             IWebElement elem_button_2 = Сhrome.FindWebElement(By.XPath(btn_2));

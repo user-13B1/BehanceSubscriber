@@ -2,39 +2,65 @@
 using System.Drawing;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Text;
+using System.Windows.Forms;
 
 namespace BehanceBot
 {
-    internal class Writer
+    public class Writer
     {
-        private readonly BehBotForm Form;
-        private readonly TextWriter _writer;
-        private readonly FileReaderWriter file_reader;
-
-        public Writer(BehBotForm Form, FileReaderWriter file_reader)
-        {
-            this.Form = Form;
-            this.file_reader = file_reader;
-            _writer = new TextBoxStreamWriter(Form.txtConsole1);
-            Console.SetOut(_writer);   // Перенаправляем выходной поток консоли   
-        }
        
-        public void WriteLine(object s,bool log = true)
+        private readonly Form form;
+        private readonly TextWriter _writer;
+        private readonly string dataPathDir;
+        private readonly string pathMessageLogTxtFile;
+        private readonly object obj;
+
+        public Writer(object obj, Form form = null,TextBox textBox = null)
         {
-            if (Form.InvokeRequired)
+            this.form = form;
+            this.obj = obj;
+
+            dataPathDir = Directory.GetCurrentDirectory();
+            pathMessageLogTxtFile = dataPathDir + @"\log_message.txt";
+
+            if (form != null && textBox != null)
             {
-               // Form.BeginInvoke(new Action(() => { Console.Write("{0:T} ", DateTime.Now); }));
-                Form.BeginInvoke(new Action(() => { Console.WriteLine(s); }));
+                _writer = new TextBoxStreamWriter(textBox);
+                Console.SetOut(_writer);   // Перенаправляем выходной поток консоли   
             }
-            else
+        }
+
+        public void WriteLine(object textObj, bool log = true)
+        {
+            if (form != null)
             {
-               // Console.Write("{0:T} ", DateTime.Now);
-                Console.WriteLine(s);
+                if (form.InvokeRequired)
+                    form.BeginInvoke(new Action(() => { Console.WriteLine(textObj); }));
+                else
+                    Console.WriteLine(textObj);
             }
 
-            //Запись сообщения  в лог файл
-            if (file_reader != null && log)
-                file_reader.AddBufferMessage(s);
+            //Запись сообщения в лог файл
+            if (log)
+            {
+                string textStr = String.Format("{0:U}  ", DateTime.Now) + String.Format($"{textObj}");
+                WriteLog(textStr);
+            }
+        }
+
+        private void WriteLog(string textStr)
+        {
+            if (String.IsNullOrWhiteSpace(textStr))
+                return;
+            lock (obj)
+            {
+                using (StreamWriter writer = new StreamWriter(pathMessageLogTxtFile, true, Encoding.Default))
+                {
+                    writer.WriteLine(textStr);
+                    writer.Flush();
+                }
+            }
         }
     }
 }

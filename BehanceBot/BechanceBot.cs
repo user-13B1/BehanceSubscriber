@@ -18,7 +18,6 @@ namespace BehanceBot
     public partial class BehBotForm : Form
     {
         private readonly Writer console;
-        private readonly FileReaderWriter fileReader;
         private readonly List<Bot> bots;
         List<Process> ProcessChromeDriver;
         DBmanager db;
@@ -27,15 +26,12 @@ namespace BehanceBot
         public BehBotForm()
         {
             InitializeComponent();
-           
             textBoxLogin.Text = Properties.Settings.Default.login;
             textBoxPassword.Text = Properties.Settings.Default.password;
             
             StartPosition = FormStartPosition.Manual;
             Location = new Point(1600, 100);
-
-            fileReader = new FileReaderWriter();
-            console = new Writer(this, fileReader);
+            console = new Writer(new object(), this, txtConsole1);
             bots = new List<Bot>();
         }
 
@@ -43,11 +39,10 @@ namespace BehanceBot
         {
             Task.Run(() => Timer(TimeSpan.FromHours(4)));
             db = new DBmanager(console);
-            Task.Run(() => Launch(new SubscriberBot(console, fileReader, db), 200));
-            Task.Run(() => Launch(new LikeBot(console, fileReader, db), 200));
-            Task.Run(() => Launch(new UnsubscribeBot(console, fileReader, db), 250));
-            Task.Run(() => Launch(new WorkSaveBoardBot(console, fileReader, db), 5600));
-
+            Task.Run(() => Launch(new SubscriberBot(console, db), 200));
+            //Task.Run(() => Launch(new LikeBot(console, db), 200));
+            //Task.Run(() => Launch(new UnsubscribeBot(console, db), 250));
+            //Task.Run(() => Launch(new WorkSaveBoardBot(console, db), 300));
         }
 
 
@@ -104,16 +99,11 @@ namespace BehanceBot
             Application.Exit();
         }
 
-        private void TextBoxLogin_TextChanged(object sender, EventArgs e)
-        {
-            Properties.Settings.Default.login = textBoxLogin.Text;
-        }
-        private void TextBoxPassword_TextChanged(object sender, EventArgs e)
-        {
-            Properties.Settings.Default.password = textBoxPassword.Text;
-        }
-        private void BehBotForm_FormClosed(object sender, FormClosedEventArgs e) => CloseProgram();
+        private void TextBoxLogin_TextChanged(object sender, EventArgs e) => Properties.Settings.Default.login = textBoxLogin.Text;
         
+        private void TextBoxPassword_TextChanged(object sender, EventArgs e) => Properties.Settings.Default.password = textBoxPassword.Text;
+        
+        private void BehBotForm_FormClosed(object sender, FormClosedEventArgs e) => CloseProgram();
 
         private void EditButton_Click(object sender, EventArgs e)
         {

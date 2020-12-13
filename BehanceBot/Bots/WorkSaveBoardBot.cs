@@ -11,7 +11,7 @@ namespace BehanceBot
     {
         static int imageAddBoard_counter;
 
-        public WorkSaveBoardBot(Writer Cons, FileReaderWriter fileReader, DBmanager db) : base(Cons, fileReader,db)
+        public WorkSaveBoardBot(Writer Cons, DBmanager db) : base(Cons, db)
         {
             Name = "WorkSaveBoard";
         }
@@ -56,7 +56,6 @@ namespace BehanceBot
         {
             Сhrome.OpenUrlNewTab(userUrl);
             IWebElement Element_photo = Сhrome.FindWebElement(By.XPath("//div[@class = 'e2e-Work']/div/div[1]/div[1]/div/div/div[2]/a"));
-
 
             if (Element_photo == null)
             {
@@ -107,7 +106,6 @@ namespace BehanceBot
         private string GetRandomNameBoard()
         {
             Random rnd = new Random();
-
             switch (rnd.Next(3))
             {
                 case 0: return "Idea";
@@ -116,7 +114,6 @@ namespace BehanceBot
                 default: throw new ArgumentException("Недопустимый код операции");
             }
         }
-        
 
     }
 }

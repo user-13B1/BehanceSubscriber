@@ -99,7 +99,6 @@
   <ItemGroup>
     <Compile Include="Bots\Bot.cs" />
     <Compile Include="Class\DBmanager.cs" />
-    <Compile Include="Class\FileReaderWriter.cs" />
     <Compile Include="BechanceBot.cs">
       <SubType>Form</SubType>
     </Compile>

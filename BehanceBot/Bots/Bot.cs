@@ -9,25 +9,24 @@ namespace BehanceBot
     {
         private protected ChromeBrowser Сhrome { get; set; }
         private protected Writer Cons { get; set; }
-        private protected FileReaderWriter FileReader { get; set; }
         internal string Name { get; set; }
         internal string UserXpath { get; set; }
         static int profileCounter = 0;
-        internal int numberBot;
         protected DBmanager db;
         protected static int repeatCounter;
 
-        public Bot(Writer console, FileReaderWriter fileReader, DBmanager db)
+        public Bot(Writer console,DBmanager db)
         {
-           
             UserXpath = "//div[@data-ut = 'qa-FollowPopup-follow-content']/div[1]/ul";
             Cons = console;
-            FileReader = fileReader;
+            this.db = db;
+
             string chromeProfileName = (++profileCounter).ToString() + "BehanceBot";
             Сhrome = new ChromeBrowser(chromeProfileName);
-            numberBot = profileCounter;
             Сhrome.SetWindowSize(1280, 1000);
-            this.db = db;
+           
+            Cons.WriteLine($"Bot Load.");
+
         }
 
         internal bool IsBlock()

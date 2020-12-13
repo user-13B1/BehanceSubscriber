@@ -8,7 +8,7 @@ namespace BehanceBot
     internal class LikeBot : Bot
     {
         static int like_counter;
-        public LikeBot(Writer Cons, FileReaderWriter fileReader, DBmanager db) : base(Cons, fileReader,db)
+        public LikeBot(Writer Cons,  DBmanager db) : base(Cons, db)
         {
             Name = "LikeBot";
             

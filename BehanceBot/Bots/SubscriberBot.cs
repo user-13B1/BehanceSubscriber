@@ -10,7 +10,7 @@ namespace BehanceBot
     {
         int folow_counter;
       
-        public SubscriberBot(Writer Cons, FileReaderWriter fileReader, DBmanager db) : base(Cons, fileReader,db)
+        public SubscriberBot(Writer Cons,  DBmanager db) : base(Cons, db)
         {
             Name = "FollowingBot";
             folow_counter = 0;
