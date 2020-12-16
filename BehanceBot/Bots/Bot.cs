@@ -130,7 +130,7 @@ namespace BehanceBot
                 return false;
             }
 
-            if (userCountViews > 10000)
+            if (userCountViews > 20000)
             {
                 Cons.WriteLine($"{Name}:{userName} - Add for subscribe ");
                 db.AddUser(userUrl,1,0,0);

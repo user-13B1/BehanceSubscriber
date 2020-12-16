@@ -20,7 +20,7 @@ namespace BehanceBot
         {
             if (!OpenRandomFollowerPage())
                 return;
-
+           
             for (int i = 3; i < 3000; i++)
             {
                 string xpathNextUser = UserXpath + "/li[" +  i + "]";
@@ -31,12 +31,13 @@ namespace BehanceBot
                 Сhrome.Scroll(xpathNextUser);
                 if (!ParseAndFollowing(xpathNextUser, limit)) 
                     return;
+                Thread.Sleep(100);
             }
         }
 
+
         internal bool ParseAndFollowing(string xpathNextUser, int follow_max_count)
         {
-            Thread.Sleep(300);
 
             if(CheckUser(xpathNextUser, out string userUrl, out int userCountLike, out int userCountViews, out string userName))
             {

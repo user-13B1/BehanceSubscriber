@@ -96,8 +96,8 @@ namespace BehanceBot
             {
                 var user = query.First();
                 user.Donorsubs = donorsubs;
-                user.Donorsubs = formerfriend;
-                user.Donorsubs = friend;
+                user.Formerfriend = formerfriend;
+                user.Friend = friend;
 
                 if (collection.Update(user))
                 {
@@ -117,6 +117,8 @@ namespace BehanceBot
                 return false;
             }
         }
+
+
 
         [Table(Name = "ParseInstagramUsers")]
         public class BehanceUsers

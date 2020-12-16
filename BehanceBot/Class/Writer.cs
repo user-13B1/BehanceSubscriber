@@ -44,7 +44,7 @@ namespace BehanceBot
             //Запись сообщения в лог файл
             if (log)
             {
-                string textStr = String.Format("{0:U}  ", DateTime.Now) + String.Format($"{textObj}");
+                string textStr = String.Format("{0:F}  ", DateTime.Now) + String.Format($"{textObj}");
                 WriteLog(textStr);
             }
         }
