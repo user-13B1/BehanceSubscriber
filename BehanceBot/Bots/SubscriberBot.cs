@@ -18,20 +18,24 @@ namespace BehanceBot
 
     internal override void Start(int limit)
         {
-            if (!OpenRandomFollowerPage())
-                return;
-           
-            for (int i = 3; i < 3000; i++)
+            for (int j = 0; j < 5; j++)
             {
-                string xpathNextUser = UserXpath + "/li[" +  i + "]";
-                
-                if (IsBlock())
+                if (!OpenRandomFollowerPage())
                     return;
-               
-                Сhrome.Scroll(xpathNextUser);
-                if (!ParseAndFollowing(xpathNextUser, limit)) 
-                    return;
-                Thread.Sleep(100);
+
+                for (int i = 3; i < 3000; i++)
+                {
+                    string xpathNextUser = UserXpath + "/li[" + i + "]";
+
+                    if (IsBlock())
+                        return;
+
+                    Сhrome.Scroll(xpathNextUser);
+                    if (!ParseAndFollowing(xpathNextUser, limit))
+                        return;
+                    Thread.Sleep(100);
+                }
+                Cons.WriteLine($"___ Смена списка подписок");
             }
         }
 

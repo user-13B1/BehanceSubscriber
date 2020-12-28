@@ -125,18 +125,19 @@ namespace BehanceBot
 
             if (db.IsRepeat(userUrl))
             {
-                Cons.WriteLine($"{Name}:Repeat account. {repeatCounter++}");
+                if (repeatCounter % 10 == 0)
+                    Cons.WriteLine($"{Name}:Repeat account. {repeatCounter}");
                 repeatCounter++;
                 return false;
             }
 
             if (userCountViews > 20000)
             {
-                Cons.WriteLine($"{Name}:{userName} - Add for subscribe ");
+                Cons.WriteLine($"{Name}:{userName} - Add for subscribe.");
                 db.AddUser(userUrl,1,0,0);
             }
 
-            if (userCountLike < 100 && userCountLike > 10 && userCountViews < 999 && userCountViews > 30 && buttonText == "Подписаться")
+            if (userCountLike < 100 && userCountLike > 10 && userCountViews < 900 && userCountViews > 30 && buttonText == "Подписаться")
                 return true;
 
             return false;

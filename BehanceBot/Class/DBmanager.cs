@@ -25,7 +25,6 @@ namespace BehanceBot
             this.cons = cons;
             liteDB = new LiteDatabase(Directory.GetCurrentDirectory() + @"\Data.db");
             collection = liteDB.GetCollection<BehanceUsers>("ParseBehanceUsers");
-          
         }
 
         public void CloseBase()
@@ -118,8 +117,6 @@ namespace BehanceBot
             }
         }
 
-
-
         [Table(Name = "ParseInstagramUsers")]
         public class BehanceUsers
         {
@@ -130,7 +127,6 @@ namespace BehanceBot
             public Byte Donorsubs { get; set; }
             public Byte Formerfriend { get; set; }
             public Byte Friend { get; set; }
-      
         }
 
 

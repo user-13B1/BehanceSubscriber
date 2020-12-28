@@ -21,7 +21,7 @@ namespace BehanceBot
             string mySubs_xPath = "//div[@class = 'UserInfo-column-TMV']/table/tbody/tr[4]/td[2]/a";
             int subsCount = ParsToInt(Сhrome.FindWebElement(By.XPath(mySubs_xPath)).Text);
             Cons.WriteLine($"{Name} Number of our subscriptions {subsCount}");
-            if (subsCount <= 600)
+            if (subsCount <= 790)
             {
                 Cons.WriteLine("The number of subscriptions is not enough to start unsubscribing.");
                 return;
