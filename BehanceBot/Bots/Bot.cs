@@ -125,7 +125,7 @@ namespace BehanceBot
 
             if (db.IsRepeat(userUrl))
             {
-                if (repeatCounter % 10 == 0)
+                if (repeatCounter % 100 == 0)
                     Cons.WriteLine($"{Name}:Repeat account. {repeatCounter}");
                 repeatCounter++;
                 return false;

@@ -18,7 +18,7 @@ namespace BehanceBot
 
         internal override void Start(int limit)
         {
-            for (int j = 0; j < 10; j++)
+            for (int j = 0; j < 100; j++)
             {
                 if (!OpenRandomFollowerPage())
                     return;
