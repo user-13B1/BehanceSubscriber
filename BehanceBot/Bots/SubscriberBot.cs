@@ -8,12 +8,11 @@ namespace BehanceBot
 {
     internal class SubscriberBot : Bot
     {
-        int folow_counter;
+        static int folow_counter = 0;
       
         public SubscriberBot(Writer Cons,  DBmanager db) : base(Cons, db)
         {
             Name = "FollowingBot";
-            folow_counter = 0;
         }
 
     internal override void Start(int limit)
@@ -33,7 +32,7 @@ namespace BehanceBot
                     Сhrome.Scroll(xpathNextUser);
                     if (!ParseAndFollowing(xpathNextUser, limit))
                         return;
-                    Thread.Sleep(100);
+                   // Thread.Sleep(100);
                 }
                 Cons.WriteLine($"___ Смена списка подписок");
             }
@@ -42,8 +41,7 @@ namespace BehanceBot
 
         internal bool ParseAndFollowing(string xpathNextUser, int follow_max_count)
         {
-
-            if(CheckUser(xpathNextUser, out string userUrl, out int userCountLike, out int userCountViews, out string userName))
+            if (CheckUser(xpathNextUser, out string userUrl, out int userCountLike, out int userCountViews, out string userName))
             {
                 if (Сhrome.ClickButtonXPath(xpathNextUser + @"/div/div/div/div[2]/div[1]/div/a[1]"))
                 {

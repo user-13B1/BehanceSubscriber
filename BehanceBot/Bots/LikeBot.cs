@@ -11,7 +11,6 @@ namespace BehanceBot
         public LikeBot(Writer Cons,  DBmanager db) : base(Cons, db)
         {
             Name = "LikeBot";
-            
         }
 
         internal override void Start(int limit)
@@ -35,6 +34,9 @@ namespace BehanceBot
                         break;
                     if (CheckUser(xpathNextUser, out string userUrl, out _, out _, out _))
                     {
+                        if (userUrl == null)
+                            continue;
+
                         LikePhoto(userUrl);
                         like_counter++;
                         Cons.WriteLine($"Like!#{like_counter}");
@@ -48,9 +50,21 @@ namespace BehanceBot
 
             void LikePhoto(string userUrl)
             {
+                if (userUrl == null)
+                    return;
+                
+
                 Сhrome.OpenUrlNewTab(userUrl);
 
                 IWebElement Element_photo = Сhrome.FindWebElement(By.XPath(@"//*[@id='site-content']/div/main/div[2]/div[2]/div/div/div/div/div[1]/div[1]/div/div/div[2]/a"));
+
+                if (Element_photo == null)
+                {
+                    Thread.Sleep(3000);
+                    Сhrome.CloseAndReturnTab();
+                    return;
+                }
+
                 Сhrome.OpenUrl(Element_photo.GetAttribute("href"));
                 Thread.Sleep(300);
                 

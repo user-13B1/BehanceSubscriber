@@ -17,7 +17,7 @@ namespace BehanceBot
 
         public Bot(Writer console,DBmanager db)
         {
-            UserXpath = "//div[@data-ut = 'qa-FollowPopup-follow-content']/div[1]/ul";
+            UserXpath = "//ul[@class ='Followers-list-vZl']";
             Cons = console;
             this.db = db;
 
@@ -82,7 +82,9 @@ namespace BehanceBot
 
         internal bool OpenRandomFollowerPage()
         {
+            Cons.WriteLine($"{Name}: Open Random Page.");
             Сhrome.OpenUrl(db.GetRandomUrl() + "/followers");
+
             if (Сhrome.FindWebElement(By.XPath(UserXpath)) == null)
                 return false;
             return true;
@@ -120,6 +122,11 @@ namespace BehanceBot
             string buttonText = Сhrome.FindWebElement(By.XPath(xpath + @"/div/div/div/div[2]/div[1]/div/a[1]/span")).Text;
 
             IWebElement Element = Сhrome.FindWebElement(By.XPath(xpath + @"/div/div/div/div[1]/h3/a"));
+            if (Element == null)
+            {
+                userUrl = userName = null;
+                return false;
+            }
             userUrl = Element.GetAttribute("href");
             userName = Element.Text;
 
@@ -137,9 +144,12 @@ namespace BehanceBot
                 db.AddUser(userUrl,1,0,0);
             }
 
-            if (userCountLike < 100 && userCountLike > 10 && userCountViews < 900 && userCountViews > 30 && buttonText == "Подписаться")
-                return true;
 
+            if (userCountLike < 200 && userCountLike > 10 && userCountViews < 900 && userCountViews > 30 && buttonText == "Подписаться на")
+            {
+                Thread.Sleep(500);
+                return true;
+            }
             return false;
         }
 

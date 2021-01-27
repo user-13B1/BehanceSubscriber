@@ -21,8 +21,10 @@ namespace BehanceBot
             for (int j = 0; j < 100; j++)
             {
                 if (!OpenRandomFollowerPage())
+                {
+                    Cons.WriteLine($"Open random page error.");
                     return;
-
+                }
 
                 for (int i = 3; i < 3000; i++)
                 {
