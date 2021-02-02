@@ -22,7 +22,8 @@ namespace BehanceBot
         List<Process> ProcessChromeDriver;
         DBmanager db;
         static bool editFlag;
-       
+        static object locker = new object();
+
         public BehBotForm()
         {
             InitializeComponent();
@@ -40,10 +41,12 @@ namespace BehanceBot
             Task.Run(() => Timer(TimeSpan.FromHours(4)));
             db = new DBmanager(console);
             Task.Run(() => Launch(new SubscriberBot(console, db), 200));
-            Task.Run(() => Launch(new LikeBot(console, db), 1000));
+            Task.Run(() => Launch(new LikeBot(console, db), 200));
             Task.Run(() => Launch(new UnsubscribeBot(console, db), 250));
             Task.Run(() => Launch(new WorkSaveBoardBot(console, db), 300));
         }
+
+
 
 
         private void Launch(Bot bot,int limit)
@@ -57,7 +60,10 @@ namespace BehanceBot
         private void CloseBot(Bot bot)
         {
             bot.Close();
-            bots.Remove(bot);
+            lock (locker)
+            {
+                bots.Remove(bot);
+            }
             if(bots.Count == 0)
             {
                 console.WriteLine("All bot stoped. Application closed.");
@@ -70,7 +76,7 @@ namespace BehanceBot
         {
             ProcessChromeDriver = new List<Process>();
             List<Process> processChromeDriverOld = Process.GetProcessesByName("chromedriver").ToList();
-            Thread.Sleep(TimeSpan.FromSeconds(10));
+            Thread.Sleep(TimeSpan.FromSeconds(6));
             List<Process> ProcessChromeDriverNew = Process.GetProcessesByName("chromedriver").ToList();
 
             
@@ -83,7 +89,6 @@ namespace BehanceBot
             foreach (Bot bot in bots)
                 bot.Close();
             Thread.Sleep(TimeSpan.FromSeconds(10));
-
             CloseProgram();
         }
 

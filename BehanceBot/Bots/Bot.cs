@@ -59,7 +59,6 @@ namespace BehanceBot
             IWebElement Element = Сhrome.FindWebElement(By.XPath("//li/div/button[contains(.,'Вход')]"));
             Element.Click();
 
-
             Thread.Sleep(timeSleep);
             Сhrome.SendKeysXPath(".//input[@id='EmailPage-EmailField']", v1);
             Thread.Sleep(timeSleep);
