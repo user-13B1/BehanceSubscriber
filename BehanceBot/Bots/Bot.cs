@@ -24,9 +24,6 @@ namespace BehanceBot
             string chromeProfileName = (++profileCounter).ToString() + "BehanceBot";
             Сhrome = new ChromeBrowser(chromeProfileName);
             Сhrome.SetWindowSize(1280, 1000);
-           
-            Cons.WriteLine($"Bot Load.");
-
         }
 
         internal bool IsBlock()
