@@ -16,7 +16,7 @@ namespace BehanceBot
         internal override void Start(int limit)
         {
             Сhrome.OpenUrl(@"https://www.behance.net/balakir/projects");
-            Thread.Sleep(TimeSpan.FromSeconds(3));
+            Thread.Sleep(TimeSpan.FromSeconds(2));
             
             string mySubs_xPath = "//div[@class = 'UserInfo-column-TMV']/table/tbody/tr[4]/td[2]/a";
             int subsCount = ParsToInt(Сhrome.FindWebElement(By.XPath(mySubs_xPath)).Text);
@@ -30,19 +30,29 @@ namespace BehanceBot
             Сhrome.ClickButtonXPath(mySubs_xPath);
             Thread.Sleep(TimeSpan.FromSeconds(1));
 
-            if (Сhrome.FindWebElement(By.XPath(UserXpath)) == null)
+            if (Сhrome.FindWebElement(By.XPath(FollowingUserXpath)) == null)
+            {
+                Cons.WriteLine("UserXpath not found.");
                 return;
+            }
 
             for (int i = 2; i < subsCount; i++)
-                Сhrome.Scroll(string.Format($"{UserXpath}/li[{i}]"));
+            {
+                Сhrome.Scroll(string.Format($"{FollowingUserXpath}/li[{i}]"));
 
+                if (i % 100 == 0)
+                {
+                    Cons.WriteLine($"Scroll following list.{i}");
+                }
+            }
 
             for (int i = subsCount - 3; i > 0; i--)
             {
                 if (IsBlock())
                     return;
-               ;
-                Сhrome.Scroll(string.Format($"{UserXpath}/li[{i}]"));
+               
+
+                Сhrome.Scroll(string.Format($"{FollowingUserXpath}/li[{i}]"));
                 Thread.Sleep(3000);
                 Unsubscribe(i);
                 limit--;
@@ -56,13 +66,13 @@ namespace BehanceBot
         {
             j += 2;
            
-            IWebElement Element = Сhrome.FindWebElement(By.XPath($"{UserXpath}/li[{j}]//div/div/div/div[1]/h3/a"));
+            IWebElement Element = Сhrome.FindWebElement(By.XPath($"{FollowingUserXpath}/li[{j}]//div/div/div/div[1]/h3/a"));
             string userUrl = Element.GetAttribute("href");
             Cons.WriteLine($"Unsubscribe: {j}) {userUrl}", false);
             db.UpdateUser(userUrl, 0, 1, 0);
 
-            string btn_1 = $"{UserXpath}/li[{j}]/div/div/div/div[2]/div[1]/div/a[2]";
-            string btn_2 = $"{UserXpath}/li[{j}]/div/div/div/div[2]/div[1]/div/a[3]";
+            string btn_1 = $"{FollowingUserXpath}/li[{j}]/div/div/div/div[2]/div[1]/div/a[2]";
+            string btn_2 = $"{FollowingUserXpath}/li[{j}]/div/div/div/div[2]/div[1]/div/a[3]";
 
             IWebElement elem_button_1 = Сhrome.FindWebElement(By.XPath(btn_1));
             IWebElement elem_button_2 = Сhrome.FindWebElement(By.XPath(btn_2));

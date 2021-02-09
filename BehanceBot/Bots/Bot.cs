@@ -11,6 +11,7 @@ namespace BehanceBot
         private protected Writer Cons { get; set; }
         internal string Name { get; set; }
         internal string UserXpath { get; set; }
+        internal string FollowingUserXpath;
         static int profileCounter = 0;
         protected DBmanager db;
         protected static int repeatCounter;
@@ -18,9 +19,9 @@ namespace BehanceBot
         public Bot(Writer console,DBmanager db)
         {
             UserXpath = "//ul[@class ='Followers-list-vZl']";
+            FollowingUserXpath = "//ul[@class ='Following-list-1Gx']";
             Cons = console;
             this.db = db;
-
             string chromeProfileName = (++profileCounter).ToString() + "BehanceBot";
             Сhrome = new ChromeBrowser(chromeProfileName);
             Сhrome.SetWindowSize(1280, 1000);
@@ -113,9 +114,22 @@ namespace BehanceBot
 
         internal bool CheckUser(string xpath, out string userUrl,out int userCountLike, out int userCountViews, out string userName)
         {
-            userCountLike = ParsToInt(Сhrome.FindWebElement(By.XPath(xpath + @"/div/div/div/div[2]/div[3]/span")).Text);
-            userCountViews = ParsToInt(Сhrome.FindWebElement(By.XPath(xpath + @"/div/div/div/div[2]/div[4]/span")).Text);
-            string buttonText = Сhrome.FindWebElement(By.XPath(xpath + @"/div/div/div/div[2]/div[1]/div/a[1]/span")).Text;
+            string buttonText = String.Empty;
+            var element = Сhrome.FindWebElement(By.XPath(xpath + @"/div/div/div/div[2]/div[3]/span"));
+            if (element != null)
+                userCountLike = ParsToInt(element.Text);
+            else
+                userCountLike = 0;
+
+           element = Сhrome.FindWebElement(By.XPath(xpath + @"/div/div/div/div[2]/div[4]/span"));
+            if (element != null)
+                userCountViews = ParsToInt(element.Text);
+            else
+                userCountViews = 0;
+
+            element = Сhrome.FindWebElement(By.XPath(xpath + @"/div/div/div/div[2]/div[1]/div/a[1]/span"));
+            if (element != null)
+                buttonText = element.Text;
 
             IWebElement Element = Сhrome.FindWebElement(By.XPath(xpath + @"/div/div/div/div[1]/h3/a"));
             if (Element == null)
