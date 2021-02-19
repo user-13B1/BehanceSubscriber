@@ -11,6 +11,8 @@ using LiteDB;
 using System.Linq;
 using System.IO;
 using StackExchange.Redis;
+using System.Net;
+using System.ComponentModel;
 
 
 namespace BehanceBot
@@ -34,10 +36,14 @@ namespace BehanceBot
             Location = new Point(1600, 100);
             console = new Writer(new object(), this, txtConsole1);
             bots = new List<Bot>();
+            Start();
         }
 
-        private void BehBotForm_Load(object sender, EventArgs e)
+
+
+        private void Start()
         {
+            console.WriteLine("Start Bot.");
             Task.Run(() => Timer(TimeSpan.FromHours(4)));
             db = new DBmanager(console);
             Task.Run(() => Launch(new SubscriberBot(console, db), 200));
@@ -45,7 +51,6 @@ namespace BehanceBot
             Task.Run(() => Launch(new UnsubscribeBot(console, db), 250));
             Task.Run(() => Launch(new WorkSaveBoardBot(console, db), 300));
         }
-
 
         private void Launch(Bot bot,int limit)
         {
@@ -92,11 +97,14 @@ namespace BehanceBot
 
         private void CloseProgram()
         {
-            db.CloseBase();
-            foreach (Process proces in ProcessChromeDriver)
+            db?.CloseBase();
+            if (ProcessChromeDriver != null)
             {
-                if (proces != null)
-                    proces.CloseMainWindow();
+                foreach (Process proces in ProcessChromeDriver)
+                {
+                    if (proces != null)
+                        proces.CloseMainWindow();
+                }
             }
             Properties.Settings.Default.Save();
             Application.Exit();
@@ -125,6 +133,7 @@ namespace BehanceBot
             editFlag = !editFlag;
 
         }
+
     }
 }
 
