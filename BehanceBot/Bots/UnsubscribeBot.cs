@@ -18,10 +18,13 @@ namespace BehanceBot
             Сhrome.OpenUrl(@"https://www.behance.net/balakir/projects");
             Thread.Sleep(TimeSpan.FromSeconds(2));
             
-            string mySubs_xPath = "//div[@class = 'UserInfo-column-TMV']/table/tbody/tr[4]/td[2]/a";
+            string mySubs_xPath = "//div[contains(@class,'UserInfo-column-')]/table/tbody/tr[4]/td[2]/a";
+
+
+
             int subsCount = ParsToInt(Сhrome.FindWebElement(By.XPath(mySubs_xPath)).Text);
             Cons.WriteLine($"{Name} Number of our subscriptions {subsCount}");
-            if (subsCount <= 1300)
+            if (subsCount <= 1200)
             {
                 Cons.WriteLine("The number of subscriptions is not enough to start unsubscribing.");
                 return;

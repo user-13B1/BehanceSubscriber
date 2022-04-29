@@ -51,15 +51,18 @@ namespace BehanceBot
             void LikePhoto(string userUrl)
             {
                 if (userUrl == null)
+                {
+                    Cons.WriteLine("Error. User url = null");
                     return;
-                
+                }
 
                 Сhrome.OpenUrlNewTab(userUrl);
 
-                IWebElement Element_photo = Сhrome.FindWebElement(By.XPath(@"//*[@id='site-content']/div/main/div[2]/div[2]/div/div/div/div/div[1]/div[1]/div/div/div[2]/a"));
-
+                IWebElement Element_photo = Сhrome.FindWebElement(By.XPath(@"//div[contains(@class,'Profile-tab-')]//a"));
+               
                 if (Element_photo == null)
                 {
+                    Cons.WriteLine("LikePhoto: Error. Image not found in gallery");
                     Thread.Sleep(3000);
                     Сhrome.CloseAndReturnTab();
                     return;

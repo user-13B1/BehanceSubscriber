@@ -57,11 +57,14 @@ namespace BehanceBot
         private void AddImageToBoard(string userUrl)
         {
             Сhrome.OpenUrlNewTab(userUrl);
-            IWebElement Element_photo = Сhrome.FindWebElement(By.XPath("//div[@class = 'e2e-Work']/div/div[1]/div[1]/div/div/div[2]/a"));
+            IWebElement Element_photo = Сhrome.FindWebElement(By.XPath(@"//div[contains(@class,'Profile-tab-')]//a"));
+
+            // IWebElement Element_photo = Сhrome.FindWebElement(By.XPath("//div[@class = 'e2e-Work']/div/div[1]/div[1]/div/div/div[2]/a"));
 
             if (Element_photo == null)
             {
-                Cons.WriteLine($"AddImageToBoard. v2 {userUrl}");
+                Cons.WriteLine("AddImageToBoard: Error. Image not found in gallery");
+                Thread.Sleep(3000);
                 Сhrome.CloseAndReturnTab();
                 return;
             }

@@ -15,12 +15,13 @@ namespace BehanceBot
             Name = "FollowingBot";
         }
 
-    internal override void Start(int limit)
+        internal override void Start(int limit)
         {
             for (int j = 0; j < 5; j++)
             {
                 if (!OpenRandomFollowerPage())
                     return;
+
 
                 for (int i = 3; i < 3000; i++)
                 {
@@ -28,8 +29,9 @@ namespace BehanceBot
 
                     if (IsBlock())
                         return;
-
+                    
                     Сhrome.Scroll(xpathNextUser);
+
                     if (!ParseAndFollowing(xpathNextUser, limit))
                         return;
                    // Thread.Sleep(100);
@@ -48,14 +50,19 @@ namespace BehanceBot
                     Cons.WriteLine($"{Name} Follow:{folow_counter}) {userCountLike} {userCountViews} {userName} ");
                     folow_counter++;
                     db.AddUser(userUrl, 0, 0, 1);       //Add to friend
+                    Cons.WriteLine("Subscribe!");
                 }
                 else
                     Cons.WriteLine($"{Name} Error follow {userName}");
+              
                 return true;
             }
 
             if (folow_counter >= follow_max_count)
+            {
+                Cons.WriteLine($"Сounter reached. Completed {follow_max_count} subscriptions");
                 return false;
+            }
 
             return true;
         }

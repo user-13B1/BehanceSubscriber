@@ -18,8 +18,12 @@ namespace BehanceBot
 
         public Bot(Writer console,DBmanager db)
         {
-            UserXpath = "//ul[@class ='Followers-list-vZl']";
-            FollowingUserXpath = "//ul[@class ='Following-list-1Gx']";
+            //UserXpath = "//ul[@class ='Followers-list-dlZ']";
+            UserXpath = "//ul[contains(@class,'Followers-list-')]";
+
+            //FollowingUserXpath = "//ul[@class ='Following-list-GtQ']";
+            FollowingUserXpath = "//ul[contains(@class,'Following-list-')]";
+
             Cons = console;
             this.db = db;
             string chromeProfileName = (++profileCounter).ToString() + "BehanceBot";
@@ -44,14 +48,18 @@ namespace BehanceBot
 #if DEBUG
             timeSleep /= 2;
 #endif
-            Cons.WriteLine($"{Name}: authorization.");                             
+            Cons.WriteLine($"{Name}: Check authorization.");           
+            
             Сhrome.OpenUrl(@"https://www.behance.net/search");
 
-            if (Сhrome.FindWebElement(By.XPath("//a[@aria-label ='Создать проект']")) != null)
+            if (Сhrome.FindWebElement(By.XPath("//*[contains(text(), 'Поделиться проектом')]")) != null)
             {
-                Cons.WriteLine($"{Name}: authorization - ok.");
+                Cons.WriteLine($"{Name}: Authorization already passed.");
                 return true;
             }
+
+            Cons.WriteLine($"{Name}: Start authorization .");
+
 
             //---Enter---
             IWebElement Element = Сhrome.FindWebElement(By.XPath("//li/div/button[contains(.,'Вход')]"));
@@ -68,7 +76,7 @@ namespace BehanceBot
             Thread.Sleep(TimeSpan.FromSeconds(7));
 
             Сhrome.OpenUrl(@"https://www.behance.net");
-            if (Сhrome.FindWebElement(By.XPath("//*[contains(text(), 'Создать проект')]"))==null)
+            if (Сhrome.FindWebElement(By.XPath("//*[contains(text(), 'Поделиться проектом')]"))==null)
             {
                 Cons.WriteLine($"{Name}: Error autorize.");
                 return false;
@@ -79,14 +87,23 @@ namespace BehanceBot
 
         internal bool OpenRandomFollowerPage()
         {
-            Cons.WriteLine($"{Name}: Open Random Page.");
-            Сhrome.OpenUrl(db.GetRandomUrl() + "/followers");
+            Cons.WriteLine($"{Name}: Open Random followers Page.");
+            string randomPage = GetRandomFollowersPage();
+            Сhrome.OpenUrl(randomPage);
 
             if (Сhrome.FindWebElement(By.XPath(UserXpath)) == null)
+            {
+                Cons.WriteLine("Error Open Random Follower Page");
                 return false;
+            }
             return true;
-
         }
+
+        internal string GetRandomFollowersPage()
+        {
+            return db.GetRandomUrl() + "/followers";
+        }
+
 
         internal int ParsToInt(string text)
         {
@@ -155,7 +172,7 @@ namespace BehanceBot
             }
 
 
-            if (userCountLike < 200 && userCountLike > 10 && userCountViews < 900 && userCountViews > 30 && buttonText == "Подписаться на")
+            if (userCountLike < 200 && userCountLike > 10 && userCountViews < 900 && userCountViews > 30 && buttonText == "Подписаться")
             {
                 Thread.Sleep(500);
                 return true;
