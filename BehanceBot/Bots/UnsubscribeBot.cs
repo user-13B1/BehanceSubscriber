@@ -15,6 +15,8 @@ namespace BehanceBot
 
         internal override void Start(int limit)
         {
+            Thread.Sleep(10000);
+
             Сhrome.OpenUrl(@"https://www.behance.net/balakir/projects");
             Thread.Sleep(TimeSpan.FromSeconds(2));
             

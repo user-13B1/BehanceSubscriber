@@ -44,12 +44,12 @@ namespace BehanceBot
         private void Start() 
         {
             console.WriteLine("Start Bot.");
-            Task.Run(() => Timer(TimeSpan.FromHours(5)));
+            Task.Run(() => Timer(TimeSpan.FromHours(6)));
             db = new DBmanager(console);
             Task.Run(() => Launch(new SubscriberBot(console, db), 200));
             Task.Run(() => Launch(new LikeBot(console, db), 200));
             Task.Run(() => Launch(new UnsubscribeBot(console, db), 250));
-            Task.Run(() => Launch(new WorkSaveBoardBot(console, db), 400));
+            Task.Run(() => Launch(new WorkSaveBoardBot(console, db), 200));
         }
 
         private void Launch(Bot bot,int limit)

@@ -18,6 +18,7 @@ namespace BehanceBot
 
         internal override void Start(int limit)
         {
+            Thread.Sleep(15000);
             for (int j = 0; j < 100; j++)
             {
                 if (!OpenRandomFollowerPage())
